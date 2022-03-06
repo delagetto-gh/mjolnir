@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Heroes Api",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/src/Heroes.Api/bin/Debug/netcoreapp3.1/Heroes.Api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/Heroes.Api",
+            "console": "externalTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Mjolnir Api",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/src/Mjolnir.Api/bin/Debug/netcoreapp3.1/Mjolnir.Api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/Mjolnir.Api",
+            "console": "externalTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Mjolnir App",
+            "configurations": [
+                "Heroes Api",
+                "Mjolnir Api"
+            ],
+            "stopAll": true
+        }
+    ]
+}
