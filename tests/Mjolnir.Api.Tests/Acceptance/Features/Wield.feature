@@ -1,35 +1,51 @@
 Feature: Wield Mjolnir
-
-	Allows a hero to attempt to wield Mjolnir.
+	As a superhero
+	I want to try and wield Mjolnir
+	So that I can prove my worthiness
 
 	Scenario Outline: Worthy hero attemps to wield Mjolnir
-		Given the worthy hero <hero>
-		And the hero has a Bifrost pass
+		Given the hero <worthyHero> has been created
+		And the hero has travelled via the Bifrost and obtained an Asgard pass
 		When the hero attempts to wield Mjolnir
-		Then they should be successful
+		Then they should be successful and deemed worthy
 		Examples:
-			| hero            |
+			| worthyHero      |
+			| Thor            |
 			| Captain America |
 			| Black Panther   |
-			| Odin            |
+			| Loki            |
+			| Vision          |
+			| Superman        |
+
 
 	Scenario: Unworthy hero attemps to wield Mjolnir
-		Given the hero is unworthy
-		And the hero has a Bifrost pass
+		Given the hero <hero> has been created
+		And the hero has travelled via the Bifrost and obtained an Asgard pass
 		When the hero attempts to wield Mjolnir
-		Then they should be unsuccessful
+		Then they should be unsuccessful and deemed unworthy
 		Examples:
-			| hero            |
-			| Captain America |
-			| Black Panther   |
-			| Odin            |
+			| hero               |
+			| Captain Underpants |
+			| One Punch Man      |
+			| Gambit             |
+			| Spiderman          |
+			| Cyclops            |
 
-	Scenario: Hero attempts to wield Mjolnir without a Bifrost pass
-		Given the hero does not have a Bifrost pass
+	Scenario: A hero attempts to wield Mjolnir without an Asgard pass
+		Given the hero <hero> has been created
+		And the hero did not travel via the Bifrost
 		When the hero attempts to wield Mjolnir
-		Then they should be banished from the Asgard
+		Then they should be unsuccessful and banished from Asgard
 		Examples:
-			| hero            |
-			| Captain America |
-			| Black Panther   |
-			| Odin            |
+			| hero               |
+			| Thor               |
+			| Captain America    |
+			| Black Panther      |
+			| Loki               |
+			| Vision             |
+			| Superman           |
+			| Captain Underpants |
+			| One Punch Man      |
+			| Gambit             |
+			| Spiderman          |
+			| Cyclops            |
