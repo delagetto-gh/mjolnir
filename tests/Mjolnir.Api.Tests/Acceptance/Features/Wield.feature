@@ -13,15 +13,23 @@ Feature: Wield Mjolnir
 			| Black Panther   |
 			| Odin            |
 
+	Scenario: Unworthy hero attemps to wield Mjolnir
+		Given the hero is unworthy
+		And the hero has a Bifrost pass
+		When the hero attempts to wield Mjolnir
+		Then they should be unsuccessful
+		Examples:
+			| hero            |
+			| Captain America |
+			| Black Panther   |
+			| Odin            |
 
-
-# Scenario: Unworthy hero attemps to wield Mjolnir
-# 	Given the hero not is worthy
-# 	And the hero has a Bifrost pass
-# 	When the hero attempts to wield Mjolnir
-# 	Then they should be unsuccessfull and deemed unworthy (403 Unworthy)
-
-# Scenario: Hero attempts to wield Mjolnir without a Bifrost pass
-# 	Given the hero does not have a Bifrost pass
-# 	When the hero attempts to wield Mjolnir
-# 	Then they should be banished from the Bifrost (401 Banished)
+	Scenario: Hero attempts to wield Mjolnir without a Bifrost pass
+		Given the hero does not have a Bifrost pass
+		When the hero attempts to wield Mjolnir
+		Then they should be banished from the Asgard
+		Examples:
+			| hero            |
+			| Captain America |
+			| Black Panther   |
+			| Odin            |
