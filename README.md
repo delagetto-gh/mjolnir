@@ -33,3 +33,9 @@ Heroes.Api - In essence our 'users' service. Shall store (EF Core + SQLite) all 
              Exposes root `POST /` endpoint to register a superhero so they can enter the Bifrost and attempt to wield Mjölnir.
 
 Mjölnir.Api - The hammer that our heroes wish to yield. Exposes only one root `GET /` endpoint. 
+
+
+> Notes:   
+#### Acceptance Tests  
+
+Solution was build using .NET Core in VSCode - as Specflow doesnt yet currently have an official extensinof or VSCode, the next best option is to use their [.NET Core Template](https://www.nuget.org/packages/SpecFlow.Templates.DotNet) and the Cucumber VsCode extension.

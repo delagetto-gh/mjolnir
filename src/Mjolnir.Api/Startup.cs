@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Mjolnir.Api.Options;
 
 namespace Mjolnir.Api
 {
@@ -26,6 +27,7 @@ namespace Mjolnir.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.Configure<BifrostOptions>(Configuration.GetSection(BifrostOptions.Key));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
