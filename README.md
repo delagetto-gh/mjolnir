@@ -12,7 +12,7 @@ Small application developed for the purposes of learning:
 - If you follow the MCU, then you will know that - apart from Thor himself, only a select few characters were also deemed "worthy" and thus could wield Mjölnir.
 
 You will attempt to wield Mjolnir. You do this by first registering yourself as a superhero, then logging in.
-After then, you may try to "lift" Mjölnir by calling `GET /mjolnir` - if indeed you are worthy, you will recieve a `200 (WORTHY)`, otherwise, if you are unworthy, you will recieve a `401 (UNWORTHY)`.
+After then, you may try to "lift" Mjölnir by calling `GET /mjolnir` - if indeed you are worthy, you will recieve a `200 (WORTHY)`, otherwise, if you are unworthy, you will recieve a `403 (UNWORTHY)`.
 
 > #### Steps:
 
