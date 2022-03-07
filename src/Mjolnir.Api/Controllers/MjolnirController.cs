@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Mjolnir.Api.ActionResults;
 
 namespace Mjolnir.Api.Controllers
 {
@@ -15,7 +15,7 @@ namespace Mjolnir.Api.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok();
+            return new WorthyResult();
         }
     }
 }
