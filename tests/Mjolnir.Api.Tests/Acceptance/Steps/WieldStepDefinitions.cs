@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
@@ -62,9 +63,8 @@ namespace Acceptance.Steps
 
             using var client = _webApplicationFactory.CreateClient();
 
-            var request = new HttpRequestMessage()
+            var request = new HttpRequestMessage(HttpMethod.Get, "mjolnir")
             {
-                Method = HttpMethod.Get,
                 Headers =
                 {
                     Authorization  = new AuthenticationHeaderValue("Bearer", jwt)
