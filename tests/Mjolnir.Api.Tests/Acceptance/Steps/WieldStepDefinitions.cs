@@ -18,10 +18,10 @@ namespace Acceptance.Steps
     public sealed class WieldStepDefinitions
     {
         private readonly ScenarioContext _scenarioContext;
-        private const string HeroNameKey = "heroName";
-        private const string WorthinessKey = "worthiness";
-        private const string AsgardPassKey = "jwt";
-        private const string ResultKey = "result";
+        private const string HeroNameContextKey = "heroName";
+        private const string WorthinessContextKey = "worthiness";
+        private const string AsgardPassContextKey = "jwt";
+        private const string ResultContextKey = "result";
 
         public WieldStepDefinitions(ScenarioContext scenarioContext)
         {
@@ -31,41 +31,41 @@ namespace Acceptance.Steps
         [Given(@"the hero (.*) has been created")]
         public void GivenTheWorthyHeroHasBeenCreated(string heroName)
         {
-            _scenarioContext.Set<string>(heroName, HeroNameKey);
+            _scenarioContext.Set<string>(heroName, HeroNameContextKey);
         }
 
         [Given(@"the hero is (.*)")]
         public void AndTheHeroIs(string worthiness)
         {
-            _scenarioContext.Set<string>(worthiness, WorthinessKey);
+            _scenarioContext.Set<string>(worthiness, WorthinessContextKey);
         }
 
         [Given(@"the hero has obtained their Asgard pass")]
         public void AndTheHeroHasObtainedTheirAsgardPass()
         {
-            var hero = _scenarioContext.Get<string>(HeroNameKey);
-            var worthiness = _scenarioContext.Get<string>(WorthinessKey);
-            var bifrostSecret = _scenarioContext.Get<string>(ScenarioHooks.BifrostSecret);
+            var hero = _scenarioContext.Get<string>(HeroNameContextKey);
+            var worthiness = _scenarioContext.Get<string>(WorthinessContextKey);
+            var bifrostSecret = _scenarioContext.Get<string>(ScenarioHooks.BifrostSecretContextKey);
 
             // create bifrost pass (JWT) for hero with isworthy claim
             var jwt = GenerateJwt(hero, worthiness, bifrostSecret);
 
             // sign pass with secret
-            _scenarioContext.Set<string>(jwt, AsgardPassKey);
+            _scenarioContext.Set<string>(jwt, AsgardPassContextKey);
         }
 
         [Given(@"the hero does not have an Asgard pass")]
         public void ButTheHeroDoesNotHaveAnAsgardPass()
         {
-            _scenarioContext.Set<string>("", AsgardPassKey);
+            _scenarioContext.Set<string>("", AsgardPassContextKey);
         }
 
         [When(@"the hero attempts to wield Mjolnir")]
         public async Task WhenTheHeroAttemptsToWeildMjolnir()
         {
-            var jwt = _scenarioContext.Get<string>(AsgardPassKey);
+            var jwt = _scenarioContext.Get<string>(AsgardPassContextKey);
 
-            using var client = _scenarioContext.Get<HttpClient>(ScenarioHooks.HttpClient);
+            using var client = _scenarioContext.Get<HttpClient>(ScenarioHooks.HttpClientContextKey);
 
             var request = new HttpRequestMessage(HttpMethod.Get, "mjolnir")
             {
@@ -77,13 +77,13 @@ namespace Acceptance.Steps
 
             var response = await client.SendAsync(request);
 
-            _scenarioContext.Set<HttpResponseMessage>(response, ResultKey);
+            _scenarioContext.Set<HttpResponseMessage>(response, ResultContextKey);
         }
 
         [Then(@"they should be successful and be deemed worthy")]
         public void ThenTheyShouldBeSuccessfulAndBeDeemedWorthy()
         {
-            var response = _scenarioContext.Get<HttpResponseMessage>(ResultKey);
+            var response = _scenarioContext.Get<HttpResponseMessage>(ResultContextKey);
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             response.ReasonPhrase.Should().Be("Worthy");
         }
@@ -91,7 +91,7 @@ namespace Acceptance.Steps
         [Then(@"they should be unsuccessful and be deemed unworthy")]
         public void ThenTheyShouldBeUnsuccessfulAndBeDeemedUnworthy()
         {
-            var response = _scenarioContext.Get<HttpResponseMessage>(ResultKey);
+            var response = _scenarioContext.Get<HttpResponseMessage>(ResultContextKey);
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
             response.ReasonPhrase.Should().Be("Unworthy");
         }
@@ -99,7 +99,7 @@ namespace Acceptance.Steps
         [Then(@"they should be unsuccessful and be banished from Asgard")]
         public void ThenTheyShouldBeUnsuccessfulAndBeBanishedFromAsgard()
         {
-            var response = _scenarioContext.Get<HttpResponseMessage>(ResultKey);
+            var response = _scenarioContext.Get<HttpResponseMessage>(ResultContextKey);
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
             response.ReasonPhrase.Should().Be("Banished");
         }

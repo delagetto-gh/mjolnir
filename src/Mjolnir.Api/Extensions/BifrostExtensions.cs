@@ -11,9 +11,9 @@ using Mjolnir.Api.Configurations;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class BifrostAuthSchemeExtensions
+    public static class BifrostExtensions
     {
-        public static void AddBifrost(this AuthenticationBuilder authBuilder, IConfiguration configuration)
+        public static void AddAsgardPass(this AuthenticationBuilder authBuilder, IConfiguration configuration)
         {
             authBuilder.AddJwtBearer(options =>
             {
