@@ -13,7 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Mjolnir.Api;
-using Mjolnir.Api.Options;
+using Mjolnir.Api.Configurations;
+using Mjolnir.Api.Infrastructure;
 using TechTalk.SpecFlow;
 using Xunit;
 
@@ -31,26 +32,30 @@ namespace Acceptance.Steps
             _webApplicationFactory = webapplicationFactory;
         }
 
-        [Given(@"the worthy hero (.*)")]
-        public void GivenTheWorthyHero(string hero)
+        [Given(@"the hero (.*) has been created")]
+        public void GivenTheWorthyHeroHasBeenCreated(string heroName)
         {
-            _scenarioContext["hero"] = hero;
-            _scenarioContext["isWorthy"] = true;
+            _scenarioContext["heroName"] = heroName;
         }
 
-
-        [Given(@"the hero has a Bifrost pass")]
-        public void AndTheHeroHasABifrostPass()
+        [Given(@"the hero is (.*)")]
+        public void AndTheHeroIs(string worthiness)
         {
-            var hero = (string)_scenarioContext["hero"];
-            var isWorthy = (bool)_scenarioContext["isWorthy"];
+            _scenarioContext["worthiness"] = worthiness;
+        }
+
+        [Given(@"the hero has obtained their Asgard pass")]
+        public void AndTheHeroHasObtainedAnAsgardPass()
+        {
+            var hero = (string)_scenarioContext["heroName"];
+            var worthiness = (string)_scenarioContext["worthiness"];
             var bifrostOptions = _webApplicationFactory
                             .Services
-                            .GetRequiredService<IOptions<BifrostOptions>>()
+                            .GetRequiredService<IOptions<BifrostConfiguration>>()
                             .Value;
 
             // create bifrost pass (JWT) for hero with isworthy claim
-            var jwt = GenerateJwt(hero, isWorthy, bifrostOptions);
+            var jwt = GenerateJwt(hero, worthiness, bifrostOptions);
 
             // sign pass with secret
             _scenarioContext["jwt"] = jwt;
@@ -76,28 +81,44 @@ namespace Acceptance.Steps
             _scenarioContext["response"] = response;
         }
 
-        [Then(@"they should be successful")]
-        public void ThenTheyShouldBeSuccessful()
+        [Then(@"they should be successful and be deemed worthy")]
+        public void ThenTheyShouldBeSuccessfulAndDeemedWorthy()
         {
             var response = _scenarioContext["response"] as HttpResponseMessage;
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             response.ReasonPhrase.Should().Be("Worthy");
         }
 
-        private static string GenerateJwt(string heroName, bool isWorthy, BifrostOptions bifrostOptions)
+        [Then(@"they should be unsuccessful and be deemed unworthy")]
+        public void ThenTheyShouldBeUnsuccessfulAndDeemedUnworthy()
+        {
+            var response = _scenarioContext["response"] as HttpResponseMessage;
+            response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+            response.ReasonPhrase.Should().Be("Unworthy");
+        }
+
+        [Then(@"they should be unsuccessful and be banished from Asgard")]
+        public void ThenTheyShouldBeUnsuccessfulAndBeBanishedFromAsgard()
+        {
+            var response = _scenarioContext["response"] as HttpResponseMessage;
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            response.ReasonPhrase.Should().Be("Banished");
+        }
+
+        private static string GenerateJwt(string heroName, string worthiness, BifrostConfiguration bifrostOptions)
         {
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name, heroName),
-                new Claim("iwy", isWorthy.ToString())
+                new Claim(AsgardianClaims.Worthiness, worthiness)
             };
 
             var signingKey = new SymmetricSecurityKey(GetBytes(bifrostOptions.Secret));
-            
+
             var secDescriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(claims),
-                SigningCredentials = new SigningCredentials(signingKey, bifrostOptions.SecurityAlgorithm)
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature)
             };
 
             var jwtTokenHandler = new JwtSecurityTokenHandler();

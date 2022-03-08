@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Mjolnir.Api.Options;
+using Mjolnir.Api.Configurations;
 
 namespace Mjolnir.Api
 {
