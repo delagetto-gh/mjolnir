@@ -9,12 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Acceptance.Fixtures;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Mjolnir.Api;
 using Mjolnir.Api.Configurations;
 using Mjolnir.Api.Infrastructure;
 using TechTalk.SpecFlow;
@@ -29,6 +26,11 @@ namespace Acceptance.Steps
         private readonly ScenarioContext _scenarioContext;
         private readonly MjolnirApiFixture _fixture;
 
+        private const string HeroNameKey = "heroName";
+        private const string WorthinessKey = "worthiness";
+        private const string AsgardPassKey = "jwt";
+        private const string ResultKey = "result";
+        
         public WieldStepDefinitions(ScenarioContext scenarioContext, ITestOutputHelper outputHelper, MjolnirApiFixture fixture)
         {
             _scenarioContext = scenarioContext;
@@ -39,20 +41,20 @@ namespace Acceptance.Steps
         [Given(@"the hero (.*) has been created")]
         public void GivenTheWorthyHeroHasBeenCreated(string heroName)
         {
-            _scenarioContext["heroName"] = heroName;
+            _scenarioContext[HeroNameKey] = heroName;
         }
 
         [Given(@"the hero is (.*)")]
         public void AndTheHeroIs(string worthiness)
         {
-            _scenarioContext["worthiness"] = worthiness;
+            _scenarioContext[WorthinessKey] = worthiness;
         }
 
         [Given(@"the hero has obtained their Asgard pass")]
-        public void AndTheHeroHasObtainedAnAsgardPass()
+        public void AndTheHeroHasObtainedTheirAsgardPass()
         {
-            var hero = (string)_scenarioContext["heroName"];
-            var worthiness = (string)_scenarioContext["worthiness"];
+            var hero = (string)_scenarioContext[HeroNameKey];
+            var worthiness = (string)_scenarioContext[WorthinessKey];
             var bifrostOptions = _fixture.Services
                                 .GetRequiredService<IConfiguration>()
                                 .GetSection(BifrostConfiguration.Key)
@@ -62,13 +64,19 @@ namespace Acceptance.Steps
             var jwt = GenerateJwt(hero, worthiness, bifrostOptions);
 
             // sign pass with secret
-            _scenarioContext["jwt"] = jwt;
+            _scenarioContext[AsgardPassKey] = jwt;
         }
 
+        [Given(@"the hero does not have an Asgard pass")]
+        public void ButTheHeroDoesNotHaveAnAsgardPass()
+        {
+            _scenarioContext[AsgardPassKey] = string.Empty;
+        }
+        
         [When(@"the hero attempts to wield Mjolnir")]
         public async Task WhenTheHeroAttemptsToWeildMjolnir()
         {
-            var jwt = (string)_scenarioContext["jwt"];
+            var jwt = (string)_scenarioContext[AsgardPassKey];
 
             using var client = _fixture.CreateClient();
 
@@ -82,21 +90,21 @@ namespace Acceptance.Steps
 
             var response = await client.SendAsync(request);
 
-            _scenarioContext["response"] = response;
+            _scenarioContext[ResultKey] = response;
         }
 
         [Then(@"they should be successful and be deemed worthy")]
-        public void ThenTheyShouldBeSuccessfulAndDeemedWorthy()
+        public void ThenTheyShouldBeSuccessfulAndBeDeemedWorthy()
         {
-            var response = _scenarioContext["response"] as HttpResponseMessage;
+            var response = _scenarioContext[ResultKey] as HttpResponseMessage;
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             response.ReasonPhrase.Should().Be("Worthy");
         }
 
         [Then(@"they should be unsuccessful and be deemed unworthy")]
-        public void ThenTheyShouldBeUnsuccessfulAndDeemedUnworthy()
+        public void ThenTheyShouldBeUnsuccessfulAndBeDeemedUnworthy()
         {
-            var response = _scenarioContext["response"] as HttpResponseMessage;
+            var response = _scenarioContext[ResultKey] as HttpResponseMessage;
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
             response.ReasonPhrase.Should().Be("Unworthy");
         }
@@ -104,7 +112,7 @@ namespace Acceptance.Steps
         [Then(@"they should be unsuccessful and be banished from Asgard")]
         public void ThenTheyShouldBeUnsuccessfulAndBeBanishedFromAsgard()
         {
-            var response = _scenarioContext["response"] as HttpResponseMessage;
+            var response = _scenarioContext[ResultKey] as HttpResponseMessage;
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
             response.ReasonPhrase.Should().Be("Banished");
         }
