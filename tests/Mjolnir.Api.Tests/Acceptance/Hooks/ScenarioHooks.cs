@@ -14,8 +14,8 @@ namespace Acceptance.Hooks
     [Binding]
     public class ScenarioHooks
     {
-        public const string BifrostSecret = nameof(BifrostSecret);
-        public const string HttpClient = nameof(HttpClient);
+        public const string BifrostSecretContextKey = "BifrostSecret";
+        public const string HttpClientContextKey = "HttpClient";
 
         [BeforeScenario]
         public static void SetupScenarioContext(ScenarioContext context, ITestOutputHelper outputHelper)
@@ -34,9 +34,9 @@ namespace Acceptance.Hooks
             });
 
             //set the httpclient for the scenario steps to use
-            context[HttpClient] = apiHost.CreateClient();
+            context[HttpClientContextKey] = apiHost.CreateClient();
 
-            //get the secret used for jwt decription 
+            //get the bifrost secret used for jwt encry/decry 
             //so we can create a jwt with the same secret
             var secret = apiHost.Services
                       .GetRequiredService<IConfiguration>()
@@ -44,7 +44,7 @@ namespace Acceptance.Hooks
                       .Get<BifrostConfiguration>()
                       .Secret;
 
-            context[BifrostSecret] = secret;
+            context[BifrostSecretContextKey] = secret;
         }
     }
 }

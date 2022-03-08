@@ -25,7 +25,7 @@ namespace Mjolnir.Api
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentHeroService, CurrentHeroService>();
             services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme) //use authentication services (use JwtBearer by default/fallback)
-                    .AddBifrost(Configuration); //add custom bifrost auth scheme (jwt really)
+                    .AddAsgardPass(Configuration); //add custom Asgard pass auth scheme (jwt really)
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

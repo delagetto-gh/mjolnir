@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Mjolnir.Api.ActionResults;
 using Mjolnir.Api.Services;
 
@@ -15,17 +14,17 @@ namespace Mjolnir.Api.Controllers
     [Authorize]
     public class MjolnirController : ControllerBase
     {
-        private readonly ICurrentHeroService _heroService;
+        private readonly ICurrentHeroService _currentHeroService;
 
         public MjolnirController(ICurrentHeroService heroService)
         {
-            _heroService = heroService;
+            _currentHeroService = heroService;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            var isSuccess = _heroService.WieldMjolnir();
+            var isSuccess = _currentHeroService.WieldMjolnir();
             if (isSuccess)
                 return new WorthyResult();
 
