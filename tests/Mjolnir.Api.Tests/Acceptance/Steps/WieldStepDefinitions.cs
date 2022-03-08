@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Acceptance.Fixtures;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -52,10 +53,10 @@ namespace Acceptance.Steps
         {
             var hero = (string)_scenarioContext["heroName"];
             var worthiness = (string)_scenarioContext["worthiness"];
-            var bifrostOptions = _fixture
-                                .Services
-                                .GetRequiredService<IOptions<BifrostConfiguration>>()
-                                .Value;
+            var bifrostOptions = _fixture.Services
+                                .GetRequiredService<IConfiguration>()
+                                .GetSection(BifrostConfiguration.Key)
+                                .Get<BifrostConfiguration>();
 
             // create bifrost pass (JWT) for hero with isworthy claim
             var jwt = GenerateJwt(hero, worthiness, bifrostOptions);
