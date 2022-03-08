@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Mjolnir.Api.ActionResults
 {
-    public abstract class CustomReasonResult : StatusCodeResult
+    public abstract class CustomReasonResult : ActionResult
     {
+        private readonly int _statusCode;
         private readonly string _reasonPhrase;
 
         internal CustomReasonResult(int statusCode, string reasonPhrase)
-        : base(statusCode)
         {
+            _statusCode = statusCode;
             _reasonPhrase = reasonPhrase;
         }
         public override void ExecuteResult(ActionContext context)
@@ -17,7 +18,10 @@ namespace Mjolnir.Api.ActionResults
             base.ExecuteResult(context);
             var response = context?.HttpContext?.Features?.Get<IHttpResponseFeature>();
             if (response != null)
+            {
+                response.StatusCode = _statusCode;
                 response.ReasonPhrase = _reasonPhrase;
+            }
         }
     }
 }
