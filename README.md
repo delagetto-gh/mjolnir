@@ -2,9 +2,9 @@
 
 Small application developed for the purposes of learning:
 
-- [x] Api Gateway (Ocelot)
-- [x] JWT authentication (Claims, Issuer, Key Signing, Refresh Tokens, Best Practices)
-- [x] Entity Framework Core (Migrations)
+- [x] API Gateway (Ocelot)
+- [x] JWT Authentication (Claims, Signing, Secrets, Best Practices)
+- [x] Entity Framework Core (Migrations, SQLite)
 
 ### Overview
 
@@ -12,18 +12,18 @@ The aim of the game is to be able to wield Mjölnir. According to Norse mytholog
 
 If you follow the Marvel Comic Universe, then you will know that - apart from Thor himself, only a select few characters were also deemed worthy and thus could wield Mjölnir. 
 
-You will attempt to wield Mjolnir. You do this by first creating a hero. This hero must then enter the Bifrost to get to Ásgard, where they can attempt to wield Mjolnir.
+You will attempt to wield Mjolnir. You do this by first creating a hero. This hero must then travel via the Bifrost to get to Ásgard, where they can then attempt to wield Mjölnir.
 
-When your hero tries to wield Mjolnir, if they are indeed worthy, you will recieve a `200 (Worthy)`, however if they are unworthy, you will recieve a `403 (Unworhy)`.
+When your hero tries to wield Mjölnir, if they are indeed worthy, you will recieve a `200 (Worthy)`, however if they are unworthy, you will recieve a `403 (Unworhy)`.
 
 If your hero tries to sneak into Ásgard without having taken the Bifrost, then your hero shall be banished back to Midgard `401 (Banished)`.
 
 ### Steps:
 
 1. Create your hero `POST {baseUrl}/heroes`  
-2. Enter the Bifrost with your hero `POST {baseUrl}/bifrost`  
-2.1 In response you will receive your Ásgardian pass.
-3. Attempt to wield Mjolnir at `GET {baseUrl}/mjolnir` with your Ásgardian pass add `Authorization: Bearer <yourAsgardianPass>` to the request headers.
+2. Travel the Bifrost with your hero `POST {baseUrl}/bifrost`  
+2.1 In response you will receive your Ásgard pass.
+3. Attempt to wield Mjolnir at `GET {baseUrl}/mjolnir` with your Ásgard pass add `Authorization: Bearer <yourAsgardPass>` to the request headers.
 
 ### Architecture:
 
@@ -50,10 +50,9 @@ In essence our 'users' service. Shall store (EF Core + SQLite) all the heroes th
 Exposes a single `POST /` endpoint to register a hero so they can enter the Bifrost and attempt to wield Mjölnir.
 
 #### Mjölnir.Api:
-The hammer that our heroes wish to yield. Exposes only one root `GET /` endpoint. 
-
+The hammer that our heroes wish to yield. Exposes only one root `GET /` endpoint. If your hero is worthy, you will recieve a `200 (Worthy)`, however if they are unworthy, you will recieve a `403 (Unworhy)`.
 
 ### Notes:   
-#### Acceptance Tests  
+#### Acceptance Tests notes:
 
-Solution was build using .NET Core in VSCode - as Specflow doesnt yet currently have an official extensinof or VSCode, the next best option is to use their [.NET Core Template](https://www.nuget.org/packages/SpecFlow.Templates.DotNet) and the Cucumber VsCode extension.
+The app was built using .NET Core in VSCode - as Specflow doesnt yet currently have officiall extension support for this IDE, the next best option is to use their [.NET Core Template](https://www.nuget.org/packages/SpecFlow.Templates.DotNet) and the Cucumber VSCode extension.
