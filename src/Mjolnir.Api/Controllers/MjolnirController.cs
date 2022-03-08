@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Mjolnir.Api.ActionResults;
+using Mjolnir.Api.Services;
 
 namespace Mjolnir.Api.Controllers
 {
@@ -14,14 +15,21 @@ namespace Mjolnir.Api.Controllers
     [Authorize]
     public class MjolnirController : ControllerBase
     {
+        private readonly ICurrentHeroService _heroService;
+
+        public MjolnirController(ICurrentHeroService heroService)
+        {
+            _heroService = heroService;
+        }
+
         [HttpGet]
         public IActionResult Get()
         {
-            var worthinessClaim = Infrastructure.AsgardianClaims.Worthiness; 
-            if(!User.HasClaim(o => o.Type == worthinessClaim) || User.Claims.First(o => o.Type == worthinessClaim).Value != "Worthy")
-                return new UnworthyResult();
-            
-            return new WorthyResult();
+            var isSuccess = _heroService.WieldMjolnir();
+            if (isSuccess)
+                return new WorthyResult();
+
+            return new UnworthyResult();
         }
     }
 }

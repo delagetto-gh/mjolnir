@@ -16,6 +16,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Mjolnir.Api.Configurations;
+using Mjolnir.Api.Infrastructure;
+using Mjolnir.Api.Services;
 
 namespace Mjolnir.Api
 {
@@ -32,6 +34,8 @@ namespace Mjolnir.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentHeroService, CurrentHeroService>();
             services.Configure<BifrostConfiguration>(Configuration.GetSection(BifrostConfiguration.Key));
             services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme) //use authentication services (use JwtBearer by default/fallback)
                     .AddJwtBearer(options => //add the 'jwt bearer' scheme -  scheme is a name which corresponds to an authentication handler (+ its options)
@@ -45,8 +49,8 @@ namespace Mjolnir.Api
                             OnChallenge = ctx =>
                             {
                                 ctx.HandleResponse();
-                                ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
-                                ctx.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = "Unowrthy";
+                                ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                                ctx.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = "Banished";
                                 return Task.CompletedTask;
                             }
                         };

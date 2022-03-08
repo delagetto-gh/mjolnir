@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Acceptance.Fixtures;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,19 +18,21 @@ using Mjolnir.Api.Configurations;
 using Mjolnir.Api.Infrastructure;
 using TechTalk.SpecFlow;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Acceptance.Steps
 {
     [Binding]
-    public sealed class WieldStepDefinitions : IClassFixture<WebApplicationFactory<Startup>>
+    public sealed class WieldStepDefinitions : IClassFixture<MjolnirApiFixture>
     {
         private readonly ScenarioContext _scenarioContext;
-        private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+        private readonly MjolnirApiFixture _fixture;
 
-        public WieldStepDefinitions(ScenarioContext scenarioContext, WebApplicationFactory<Startup> webapplicationFactory)
+        public WieldStepDefinitions(ScenarioContext scenarioContext, ITestOutputHelper outputHelper, MjolnirApiFixture fixture)
         {
             _scenarioContext = scenarioContext;
-            _webApplicationFactory = webapplicationFactory;
+            _fixture = fixture;
+            _fixture.XunitTestOutputHelper = outputHelper;
         }
 
         [Given(@"the hero (.*) has been created")]
@@ -49,10 +52,10 @@ namespace Acceptance.Steps
         {
             var hero = (string)_scenarioContext["heroName"];
             var worthiness = (string)_scenarioContext["worthiness"];
-            var bifrostOptions = _webApplicationFactory
-                            .Services
-                            .GetRequiredService<IOptions<BifrostConfiguration>>()
-                            .Value;
+            var bifrostOptions = _fixture
+                                .Services
+                                .GetRequiredService<IOptions<BifrostConfiguration>>()
+                                .Value;
 
             // create bifrost pass (JWT) for hero with isworthy claim
             var jwt = GenerateJwt(hero, worthiness, bifrostOptions);
@@ -66,7 +69,7 @@ namespace Acceptance.Steps
         {
             var jwt = (string)_scenarioContext["jwt"];
 
-            using var client = _webApplicationFactory.CreateClient();
+            using var client = _fixture.CreateClient();
 
             var request = new HttpRequestMessage(HttpMethod.Get, "mjolnir")
             {
