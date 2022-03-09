@@ -6,7 +6,7 @@ Small application developed for the purposes of learning:
 - [x] JWT Authentication (Claims, Signing, Secrets, Best Practices)
 - [x] Entity Framework Core (Migrations, SQLite)
 
-## Overview
+### Overview
 
 The aim of the game is to be able to try and wield Mjölnir. According to Norse mythology, Mjölnir is the hammer of the thunder god Thor. It is enchanted, meaning it can only be wielded by those who are deemed _"worthy"_.  
 
@@ -18,22 +18,22 @@ When your hero tries to wield Mjölnir, if they are indeed worthy, you will reci
 
 If you try to wield Mjölnir without an AP, then your hero will be banished to Midgard `401 (Banished)`.
 
-### Steps:
+#### Steps:
 
 1. Create your hero `POST /heroes`  
 2. Call upon Heimdall to issue your hero's Ásgard pass (AP) `POST /summon`  
 3. Attempt to wield Mjolnir at `GET /wield` with your AP _(add `Authorization: Bearer <yourAsgardPass>` to the request headers)_.
 
-## Design & Development:
+### Design & Development:
 
-### The test list :ballot_box_with_check:  
+#### The test list :ballot_box_with_check:  
 
 > What should you test? Before you begin, write a list of all the tests you know you will have to write.
 >
-> <cite>-- Kent Beck, "Test-Driven Development By Example"</cite>
+> --<cite>Kent Beck, "Test-Driven Development By Example"</cite>
 
 
-| Feature: Lift Mjölnir                      |                     |
+| Lift Mjölnir                               |                     |
 | ------------------------------------------ | ------------------- |
 | Scenario                                   | Action              |
 | Hero has AP and is worthy                  | `return success`    |
@@ -41,23 +41,23 @@ If you try to wield Mjölnir without an AP, then your hero will be banished to M
 | Hero does not have AP but is worthy        | `banish to Midgard` |
 | Hero does not have AP and is not is worthy | `banish to Midgard` |
 
-| Feature: Obtain Asgard Pass (AP) |                   |
-| -------------------------------- | ----------------- |
-| Scenario                         | Action            |
-| Heimdall verifies hero           | `issue AP`        |
-| Heimdall unable to verify hero   | `do not issue AP` |
-|                                  |
+| Summon Heimdall                |                   |
+| ------------------------------ | ----------------- |
+| Scenario                       | Action            |
+| Heimdall verifies hero         | `issue AP`        |
+| Heimdall unable to verify hero | `do not issue AP` |
+|                                |                   |
 
-
-| Feature: Create Hero               |                                                |
+| Create Hero                        |                                                |
 | ---------------------------------- | ---------------------------------------------- |
 | Scenario                           | Action                                         |
 | Hero with same name already exists | `return error that hero name is already taken` |
 
-### Project Structure
+#### Project Structure
 
-#### Heimdall.Api:  
-> _ Heimdall is the sentry of the Bifrost, guard to Asgard._
+##### Heimdall.Api:  
+
+> Heimdall is the sentry of the Bifrost, guard to Asgard.
 
 As such, this seemed like a perfect fit as the API Gateway to our application (_...and Ásgard_). It will be responsible for: 
 * Protecting our APIs - implements AuthN/AuthZ via JWT
@@ -73,15 +73,15 @@ As the service also acts as our API Gateway it exposes and maps the following ro
 | `POST /summon`    | `POST heimdall-api/summon` |
 | `GET /wield`      | `GET mjolnir-api/wield`    |
 
-#### Mcu.Api:
+##### Mcu.Api:
 In essence our _'users'_ microservice. It shall store (EF Core + SQLite) all the heroes that have been created in the system. 
 
 Exposes a single `POST /heroes` endpoint to create a hero.
 
-#### Mjölnir.Api:
+##### Mjölnir.Api:
 The hammer that our heroes wish to wield. Exposes a single `GET /wield` endpoint. If your hero is worthy, you will recieve a `200 (Worthy)`, however if they are unworthy, you will recieve a `403 (Unworhy)`.
 
-### Notes:   
+#### Notes:   
 #### Acceptance Tests notes:
 
 The app was built using .NET Core in VSCode - as Specflow doesnt yet currently have officiall extension support for this IDE, the next best option is to use their [.NET Core Template](https://www.nuget.org/packages/SpecFlow.Templates.DotNet) and the Cucumber VSCode extension.
