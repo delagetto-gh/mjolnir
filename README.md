@@ -26,7 +26,7 @@ If you try to wield Mjölnir without an AP, then your hero will be banished to M
 
 ### Design & Development:
 
-#### The test list :ballot_box_with_check:  
+#### The test list
 
 > What should you test? Before you begin, write a list of all the tests you know you will have to write.
 >
