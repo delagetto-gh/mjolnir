@@ -5,19 +5,19 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4FA504F2-8A96-4129-9BE7-FE82F3745280}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heroes.Api", "src\Heroes.Api\Heroes.Api.csproj", "{983F9932-1DD1-4505-A2C7-E800FBDBF02B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Multiverse", "src\Multiverse\Multiverse.csproj", "{983F9932-1DD1-4505-A2C7-E800FBDBF02B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mjolnir.Api", "src\Mjolnir.Api\Mjolnir.Api.csproj", "{124102C4-9178-44B8-9463-7557EE17445A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mjolnir", "src\Mjolnir\Mjolnir.csproj", "{124102C4-9178-44B8-9463-7557EE17445A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{1C21332D-F9F7-4138-AFDF-6E294542CB45}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mjolnir.Api.Tests", "Mjolnir.Api.Tests", "{36DF9EBB-EE92-45B2-83FA-D99AF0E23998}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mjolnir.Tests", "Mjolnir.Tests", "{36DF9EBB-EE92-45B2-83FA-D99AF0E23998}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Acceptance", "tests\Mjolnir.Api.Tests\Acceptance\Acceptance.csproj", "{BEAE693C-04FA-4021-86E9-7C13A83D625E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Acceptance", "tests\Mjolnir.Tests\Acceptance\Acceptance.csproj", "{BEAE693C-04FA-4021-86E9-7C13A83D625E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration", "tests\Mjolnir.Api.Tests\Integration\Integration.csproj", "{457A1D94-189D-4191-9D45-ED530EC06325}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration", "tests\Mjolnir.Tests\Integration\Integration.csproj", "{457A1D94-189D-4191-9D45-ED530EC06325}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit", "tests\Mjolnir.Api.Tests\Unit\Unit.csproj", "{06831ADA-6843-4E0B-B9ED-B1F827C5A128}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit", "tests\Mjolnir.Tests\Unit\Unit.csproj", "{06831ADA-6843-4E0B-B9ED-B1F827C5A128}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
