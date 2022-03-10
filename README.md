@@ -37,13 +37,12 @@ If your hero tries to lift Mjölnir without their Ásgard Pass, then your hero w
 > --<cite>Kent Beck, "Test-Driven Development By Example"</cite>
 
 
-| UC.1: Weild Mjölnir |                                            |                     |                                     |
-| ------------------- | ------------------------------------------ | ------------------- | ----------------------------------- |
-| #ID                 | Scenario                                   | Outcome             | User Story                          |
-| UC.1.S1             | Hero has AP and is worthy                  | `return success`    | [See user story](./docs/uc-1-s1.md) |
-| UC.1.S2             | Hero has AP but isn't worthy               | `return failure`    | [See user story](./docs/uc-1-s2.md) |
-| UC.1.S3             | Hero does not have AP but is worthy        | `banish to Midgard` | [See user story](./docs/uc-1-s3.md) |
-| UC.1.S4             | Hero does not have AP and is not is worthy | `banish to Midgard` | [See user story](here)              |
+| UC.1: Weild Mjölnir |                                                  |                         |                                     |
+| ------------------- | ------------------------------------------------ | ----------------------- | ----------------------------------- |
+| #ID                 | Scenario                                         | Outcome                 | User Story                          |
+| UC.1.S1             | Hero has AP and is worthy                        | `return success`        | [See user story](./docs/uc-1-s1.md) |
+| UC.1.S2             | Hero has AP but isn't worthy                     | `return failure`        | [See user story](./docs/uc-1-s2.md) |
+| UC.1.S3             | Hero (regardless of worthiness) does not have AP | `banished from Asgard` | [See user story](./docs/uc-1-s3.md) |
 
 
 | UC-2: Summon Heimdall |                                |                   |                        |

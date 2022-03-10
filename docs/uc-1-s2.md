@@ -7,9 +7,9 @@
 
     Scenario: Unworthy hero attempts to wield Mjolnir
         Given I have created the hero <unworthyHero> 
-        And my hero's Asgard pass has been issued
+        And my hero has been issued an Asgard pass
         When my hero attempts to wield Mjolnir
-        Then they should be unsuccessful and be deemed unworthy
+        Then my hero should be unsuccessful and be deemed unworthy
         Examples:
  			| unworthyHero       |
 			| Captain Underpants |

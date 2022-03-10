@@ -7,7 +7,7 @@
 
     Scenario: Worthy hero attempts to wield Mjolnir
         Given I have created the hero <worthyHero> 
-        And my hero's Asgard pass has been issued
+        And my hero has been issued an Asgard pass
         When my hero attempts to wield Mjolnir
         Then they should be successful and be deemed worthy
         Examples:
