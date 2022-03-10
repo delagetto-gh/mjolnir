@@ -1,8 +1,12 @@
 ## Mjölnir :zap::hammer::zap:
 
+> Whosoever holds this hammer, if he be worthy, shall possess the power of Thor.  
+> 
+> --<cite>Mjölnir's enchantment</cite>  
+
 Small application developed for the purposes of learning:
 
-- [x] API Gateway (Ocelot)
+- [x] API Gateway (Nginx)
 - [x] JWT Authentication (Claims, Signing, Secrets, Best Practices)
 - [x] Entity Framework Core (Migrations, SQLite)
 
@@ -12,17 +16,17 @@ The aim of the game is to be able to try and wield Mjölnir. According to Norse 
 
 If you follow the Marvel Comic Universe, then you will know that - apart from Thor himself, only a select few characters were also deemed worthy and thus could wield Mjölnir. 
 
-You will attempt to wield Mjolnir. You do this by first creating a hero. The hero must then summon Heimdall, who will validate your hero and issue your Ásgard Pass (AP), where then, your hero can attempt to wield Mjölnir.
+Your hero will attempt to wield Mjolnir. You do this by first creating a hero. The hero must then call upon Heimdall, whom shall validate your hero's credentials and issue you your hero's Ásgard Pass (AP) as well as grant safe passage on the Bifrost to Ásgard - where then, your hero can attempt to wield Mjölnir.
 
-When your hero tries to wield Mjölnir, if they are indeed worthy, you will recieve a `200 (Worthy)`, however if they are unworthy, you will recieve a `403 (Unworhy)`.
+When your hero tries to lift Mjölnir, if they are indeed worthy, you shall recieve a `200 (Worthy)`, and your hero thus becomes the beweilder to Mjölnir. However if they are unworthy, you shall recieve a `403 (Unworhy)`, and your doth not beweild.
 
-If you try to wield Mjölnir without an AP, then your hero will be banished to Midgard `401 (Banished)`.
+If your hero tries to lift Mjölnir without their Ásgard Pass, then your hero will be banished to Midgard `401 (Banished)`. 
 
 #### Steps:
 
-1. Create your hero `POST /heroes`  
-2. Call upon Heimdall to issue your hero's Ásgard pass (AP) `POST /summon`  
-3. Attempt to wield Mjolnir at `GET /wield` with your AP _(add `Authorization: Bearer <yourAsgardPass>` to the request headers)_.
+1. Create your hero `POST /create-hero`  
+2. Summon Heimdall to issue your hero's Ásgard pass (AP) `POST /summon-heimdall`  
+3. Attempt to wield Mjolnir at `GET /weild-mjolnir` with your AP _(add `Authorization: AP <yourAsgardPass>` to the request headers)_.
 
 ### Design & Development:
 
@@ -33,53 +37,61 @@ If you try to wield Mjölnir without an AP, then your hero will be banished to M
 > --<cite>Kent Beck, "Test-Driven Development By Example"</cite>
 
 
-| Lift Mjölnir                               |                     |
+| UC-1: Lift Mjölnir                         |                     |
 | ------------------------------------------ | ------------------- |
-| Scenario                                   | Action              |
+| Scenario                                   | Outcome             |
 | Hero has AP and is worthy                  | `return success`    |
 | Hero has AP but isn't worthy               | `return failure`    |
 | Hero does not have AP but is worthy        | `banish to Midgard` |
 | Hero does not have AP and is not is worthy | `banish to Midgard` |
 
-| Summon Heimdall                |                   |
+| UC-2: Summon Heimdall          |                   |
 | ------------------------------ | ----------------- |
-| Scenario                       | Action            |
+| Scenario                       | Outcome           |
 | Heimdall verifies hero         | `issue AP`        |
 | Heimdall unable to verify hero | `do not issue AP` |
 |                                |                   |
 
-| Create Hero                        |                                                |
+| UC-3: Create Hero                  |                                                |
 | ---------------------------------- | ---------------------------------------------- |
-| Scenario                           | Action                                         |
+| Scenario                           | Outcome                                        |
 | Hero with same name already exists | `return error that hero name is already taken` |
 
 #### Project Structure
 
-##### Heimdall.Api:  
+##### Bifrost:  
 
-> Heimdall is the sentry of the Bifrost, guard to Asgard.
+> The rainbow bridge that connects Asgard, the world of the Aesir tribe of gods,
 
-As such, this seemed like a perfect fit as the API Gateway to our application (_...and Ásgard_). It will be responsible for: 
-* Protecting our APIs - implements AuthN/AuthZ via JWT
-* Routing the requests to the right APIs (Ocelot)
-
-The API iself exposes a `POST /summon` endpoint to allow heroes to enter their credentials. In response, you will recieve your Ásgard Pass (AP) which permits you to enter Ásgard so you can attempt to wield Mjölnir.
+As such, this seemed like a perfect fit as the API Gateway to our application (_...and Ásgard_). It is responsible for: 
+* Routing the requests to the right APIs (Nginx)
 
 As the service also acts as our API Gateway it exposes and maps the following routes:
 
-| Upstream Endpoint | Downstream Endpoint        |
-| ----------------- | -------------------------- |
-| `POST /heroes`    | `POST mcu-api/heroes`      |
-| `POST /summon`    | `POST heimdall-api/summon` |
-| `GET /wield`      | `GET mjolnir-api/wield`    |
+| Upstream Endpoint       | Downstream Endpoint    |
+| ----------------------- | ---------------------- |
+| `POST /create-hero`     | `POST multiverse-api/` |
+| `POST /summon-heimdall` | `POST heimdall-api/`   |
+| `GET /wield-mjolnir`    | `GET mjolnir-api/`     |
 
-##### Mcu.Api:
+##### Heimdall:  
+
+> Heimdall is the sentry of the Bifrost, guard to Asgard.
+
+It is responsible for: 
+* Protecting our APIs - implementing AuthN/AuthZ & issuing JWTs. 
+
+The API iself exposes a `POST /` endpoint to allow heroes to enter their credentials. In response, you will recieve your Ásgard Pass (AP), allowing you attempt to wield Mjölnir.
+
+##### Multiverse:
 In essence our _'users'_ microservice. It shall store (EF Core + SQLite) all the heroes that have been created in the system. 
 
-Exposes a single `POST /heroes` endpoint to create a hero.
+Exposes a `POST /` endpoint to create a hero.
 
-##### Mjölnir.Api:
-The hammer that our heroes wish to wield. Exposes a single `GET /wield` endpoint. If your hero is worthy, you will recieve a `200 (Worthy)`, however if they are unworthy, you will recieve a `403 (Unworhy)`.
+##### Mjölnir:
+The hammer that our heroes wish to wield.   
+Exposes a single `GET /` endpoint.   
+If your hero is worthy, you will recieve a `200 (Worthy)`, however if they are unworthy, you will recieve a `403 (Unworhy)`.
 
 #### Notes:   
 #### Acceptance Tests notes:
