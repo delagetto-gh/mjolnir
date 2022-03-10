@@ -37,31 +37,31 @@ If your hero tries to lift Mjölnir without their Ásgard Pass, then your hero w
 > --<cite>Kent Beck, "Test-Driven Development By Example"</cite>
 
 
-| UC-1: Lift Mjölnir                         |                     |
-| ------------------------------------------ | ------------------- |
-| Scenario                                   | Outcome             |
-| Hero has AP and is worthy                  | `return success`    |
-| Hero has AP but isn't worthy               | `return failure`    |
-| Hero does not have AP but is worthy        | `banish to Midgard` |
-| Hero does not have AP and is not is worthy | `banish to Midgard` |
+| UC.1: Weild Mjölnir |                                            |                     |                                     |
+| ------------------- | ------------------------------------------ | ------------------- | ----------------------------------- |
+| #ID                 | Scenario                                   | Outcome             | User Story                          |
+| UC.1.S1             | Hero has AP and is worthy                  | `return success`    | [See user story](./docs/uc-1-s1.md) |
+| UC.1.S2             | Hero has AP but isn't worthy               | `return failure`    | [See user story](./docs/uc-1-s2.md) |
+| UC.1.S3             | Hero does not have AP but is worthy        | `banish to Midgard` | [See user story](./docs/uc-1-s3.md) |
+| UC.1.S4             | Hero does not have AP and is not is worthy | `banish to Midgard` | [See user story](here)              |
 
-| UC-2: Summon Heimdall          |                   |
-| ------------------------------ | ----------------- |
-| Scenario                       | Outcome           |
-| Heimdall verifies hero         | `issue AP`        |
-| Heimdall unable to verify hero | `do not issue AP` |
-|                                |                   |
 
-| UC-3: Create Hero                  |                                                |
-| ---------------------------------- | ---------------------------------------------- |
-| Scenario                           | Outcome                                        |
-| Hero with same name already exists | `return error that hero name is already taken` |
+| UC-2: Summon Heimdall |                                |                   |                        |
+| --------------------- | ------------------------------ | ----------------- | ---------------------- |
+| #ID                   | Scenario                       | Outcome           | User Story             |
+| UC-2.1                | Heimdall verifies hero         | `issue AP`        | [See user story](here) |
+| UC-2.1                | Heimdall unable to verify hero | `do not issue AP` | [See user story](here) |
+
+| UC-3: Create Hero |                                    |                                      |                        |
+| ----------------- | ---------------------------------- | ------------------------------------ | ---------------------- |
+| #ID               | Scenario                           | Outcome                              | User Story             |
+| UC-3.1            | Hero with same name already exists | `error "hero name is already taken"` | [See user story](here) |
 
 ### Project Structure
 
 ##### Bifrost
 
-> The rainbow bridge that connects Asgard, the world of the Aesir tribe of gods,
+> The rainbow bridge that connects Asgard, the world of the Aesir tribe of gods.
 
 As such, this seemed like a perfect fit as the API Gateway to our application (_...and Ásgard_). It is responsible for: 
 * Routing the requests to the right APIs (Nginx)
