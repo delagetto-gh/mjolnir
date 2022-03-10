@@ -57,9 +57,9 @@ If your hero tries to lift Mjölnir without their Ásgard Pass, then your hero w
 | Scenario                           | Outcome                                        |
 | Hero with same name already exists | `return error that hero name is already taken` |
 
-#### Project Structure
+### Project Structure
 
-##### Bifrost:  
+##### Bifrost
 
 > The rainbow bridge that connects Asgard, the world of the Aesir tribe of gods,
 
@@ -74,7 +74,7 @@ As the service also acts as our API Gateway it exposes and maps the following ro
 | `POST /summon-heimdall` | `POST heimdall-api/`   |
 | `GET /wield-mjolnir`    | `GET mjolnir-api/`     |
 
-##### Heimdall:  
+##### Heimdall 
 
 > Heimdall is the sentry of the Bifrost, guard to Asgard.
 
@@ -83,17 +83,17 @@ It is responsible for:
 
 The API iself exposes a `POST /` endpoint to allow heroes to enter their credentials. In response, you will recieve your Ásgard Pass (AP), allowing you attempt to wield Mjölnir.
 
-##### Multiverse:
+##### Multiverse
 In essence our _'users'_ microservice. It shall store (EF Core + SQLite) all the heroes that have been created in the system. 
 
 Exposes a `POST /` endpoint to create a hero.
 
-##### Mjölnir:
+##### Mjölnir
 The hammer that our heroes wish to wield.   
 Exposes a single `GET /` endpoint.   
 If your hero is worthy, you will recieve a `200 (Worthy)`, however if they are unworthy, you will recieve a `403 (Unworhy)`.
 
-#### Notes:   
-#### Acceptance Tests notes:
+### Notes
+#### Acceptance Tests
 
 The app was built using .NET Core in VSCode - as Specflow doesnt yet currently have officiall extension support for this IDE, the next best option is to use their [.NET Core Template](https://www.nuget.org/packages/SpecFlow.Templates.DotNet) and the Cucumber VSCode extension.
