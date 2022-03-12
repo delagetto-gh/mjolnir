@@ -5,24 +5,24 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Heroes Api",
+            "name": "Heimdall",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Heroes.Api/bin/Debug/netcoreapp3.1/Heroes.Api.dll",
+            "program": "${workspaceFolder}/src/Services/Heimdall/bin/Debug/netcoreapp3.1/Heimdall.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/Heroes.Api",
+            "cwd": "${workspaceFolder}/src/Services/Heimdall",
             "console": "internalConsole",
             "stopAtEntry": false
         },
         {
-            "name": "Mjolnir Api",
+            "name": "Asgard",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Mjolnir.Api/bin/Debug/netcoreapp3.1/Mjolnir.Api.dll",
+            "program": "${workspaceFolder}/src/Services/Asgard/bin/Debug/netcoreapp3.1/Asgard.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/Mjolnir.Api",
+            "cwd": "${workspaceFolder}/src/Services/Asgard",
             "console": "internalConsole",
             "stopAtEntry": false
         },
@@ -34,10 +34,10 @@
     ],
     "compounds": [
         {
-            "name": "Mjolnir App",
+            "name": "Mjolnir",
             "configurations": [
-                "Heroes Api",
-                "Mjolnir Api"
+                "Heimdall",
+                "Asgard"
             ],
             "stopAll": true
         }
