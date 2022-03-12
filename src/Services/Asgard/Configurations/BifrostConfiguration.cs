@@ -1,8 +1,8 @@
 namespace Asgard.Configurations
 {
-    public class BifrostConfiguration
+    public class HeimdallConfiguration
     {
-        public const string Key = "Bifrost";
+        public const string Key = "Heimdall";
         public string Secret { get; set; }
     }
 }

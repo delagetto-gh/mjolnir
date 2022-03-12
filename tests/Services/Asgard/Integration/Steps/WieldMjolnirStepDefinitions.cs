@@ -9,6 +9,7 @@ using Integration.Hooks;
 using FluentAssertions;
 using Microsoft.IdentityModel.Tokens;
 using TechTalk.SpecFlow;
+using Integration.Utilities;
 
 namespace Integration.Steps
 {
@@ -17,7 +18,7 @@ namespace Integration.Steps
     {
         private readonly ScenarioContext _scenarioContext;
         private const string HeroContextKey = "heroName";
-        private const string ApContextKet = "jwt";
+        private const string AsgardPassContextKey = "ap";
         private const string RequestContextKey = "request";
         private const string ResultContextKey = "result";
 
@@ -36,13 +37,12 @@ namespace Integration.Steps
         public void AndIHaveMyHerosAp()
         {
             var hero = _scenarioContext.Get<string>(HeroContextKey);
-            var heimdallSecret = _scenarioContext.Get<string>(ScenarioHooks.BifrostSecretContextKey);
 
-            // create bifrost pass (JWT) for hero with isworthy claim
-            var jwt = GenerateJwt(hero, heimdallSecret);
+            var apGenerator = _scenarioContext.Get<AsgardPassGenerator>(ScenarioHooks.AsgardPassGeneratorContextKey);
 
-            // sign pass with secret
-            _scenarioContext.Set<string>(jwt, ApContextKet);
+            var ap = apGenerator.Generate(hero);
+
+            _scenarioContext.Set<string>(ap, AsgardPassContextKey);
         }
 
         [Given(@"I create a (.*) request to (.*)")]
@@ -57,7 +57,7 @@ namespace Integration.Steps
         public void AndIAddInTheAuthorisationHeader(string authHeaderTemplate)
         {
             var authScheme = authHeaderTemplate.Split(' ')[0];
-            var authValue = _scenarioContext.Get<string>(ApContextKet);
+            var authValue = _scenarioContext.Get<string>(AsgardPassContextKey);
 
             var request = _scenarioContext.Get<HttpRequestMessage>(RequestContextKey);
 
@@ -89,31 +89,5 @@ namespace Integration.Steps
             var response = _scenarioContext.Get<HttpResponseMessage>(ResultContextKey);
             response.ReasonPhrase.Should().Be(reasonPhrase);
         }
-        
-        private static string GenerateJwt(string heroName, string bifrostSecret)
-        {
-            var claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.Name, heroName)
-            };
-
-            var signingKey = new SymmetricSecurityKey(GetBytes(bifrostSecret));
-
-            var secDescriptor = new SecurityTokenDescriptor()
-            {
-                Subject = new ClaimsIdentity(claims),
-                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var jwtTokenHandler = new JwtSecurityTokenHandler();
-
-            var secToken = jwtTokenHandler.CreateToken(secDescriptor);
-
-            var jwt = jwtTokenHandler.WriteToken(secToken);
-
-            return jwt;
-        }
-
-        private static byte[] GetBytes(string secret) => Encoding.UTF8.GetBytes(secret);
     }
 }
