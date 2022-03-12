@@ -2,6 +2,7 @@ using System;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Asgard.Services;
+using System.Linq;
 
 namespace Asgard.Infrastructure
 {
@@ -16,10 +17,28 @@ namespace Asgard.Infrastructure
 
         public bool WieldAsgard()
         {
-            var currUser = _httpContextAccessor?.HttpContext?.User;
-            return currUser != null && IsWorthy(currUser);
+            var currUser = _httpContextAccessor.HttpContext.User;
+
+            var heroName = GetHeroName(currUser);
+
+            return IsHeroWorthy(heroName);
         }
 
-        private static bool IsWorthy(ClaimsPrincipal currUser) => currUser.HasClaim(AsgardianClaims.Worthiness, "Worthy");
+        private string GetHeroName(ClaimsPrincipal currUser) => currUser.FindFirst(ClaimTypes.Name).Value;
+
+        private bool IsHeroWorthy(string heroName)
+        {
+            var worthyHeroes = new string[]
+            {
+              "Thor",
+              "Captain America",
+              "Black Panther",
+              "Loki",
+              "Vision",
+              "Superman"
+            };
+
+            return worthyHeroes.Contains(heroName);
+        }
     }
 }

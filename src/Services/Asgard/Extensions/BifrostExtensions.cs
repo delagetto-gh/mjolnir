@@ -8,21 +8,40 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Asgard.Configurations;
+using Microsoft.Extensions.Primitives;
+using System.Linq;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class BifrostExtensions
+    public static class HeimdallExtensions
     {
         public static void AddAsgardPass(this AuthenticationBuilder authBuilder, IConfiguration configuration)
         {
             authBuilder.AddJwtBearer(options =>
             {
-                var bifrostConfig = configuration
-                    .GetSection(BifrostConfiguration.Key)
-                    .Get<BifrostConfiguration>();
+                var heimdallConfig = configuration
+                    .GetSection(HeimdallConfiguration.Key)
+                    .Get<HeimdallConfiguration>();
 
                 options.Events = new JwtBearerEvents
                 {
+                    OnMessageReceived = ctx =>
+                    {
+                        var authKey = "Authorization";
+                        var authHeader = ctx.Request.Headers[authKey];
+                        var apScheme = "AP "; //our custom scheme (AP = Asgard Pass)
+
+                        if (authHeader != StringValues.Empty)
+                        {
+                            var headerValue = authHeader.FirstOrDefault();
+                            if (!string.IsNullOrEmpty(headerValue) &&
+                                headerValue.StartsWith(apScheme))
+                            {
+                                ctx.Token = headerValue.Replace(apScheme, string.Empty);
+                            }
+                        }
+                        return Task.CompletedTask;
+                    },
                     OnChallenge = ctx =>
                     {
                         ctx.HandleResponse();
@@ -33,7 +52,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 };
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    IssuerSigningKey = new SymmetricSecurityKey(GetBytes(bifrostConfig.Secret)),
+                    IssuerSigningKey = new SymmetricSecurityKey(GetBytes(heimdallConfig.Secret)),
                     ClockSkew = TimeSpan.Zero,
                     ValidateIssuer = false,
                     ValidateAudience = false,
