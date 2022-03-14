@@ -1,22 +1,15 @@
 using Asgard.Infrastructure;
+using AutoFixture;
 using FluentAssertions;
-using Moq.AutoMock;
+using Unit.Utilities;
 using Xunit;
 
 namespace Unit.Infrastructure
 {
     public class WorthyHerosListTests
     {
-        public class TheContainsMethod
+        public class TheContainsMethod : UnitTest
         {
-            private readonly WorthyHerosList _sut;
-            private readonly AutoMocker _fixture = new AutoMocker();
-
-            public TheContainsMethod()
-            {
-                _sut = _fixture.CreateInstance<WorthyHerosList>();
-            }
-
             [Theory]
             [InlineData("Thor")]
             [InlineData("Captain America")]
@@ -26,7 +19,9 @@ namespace Unit.Infrastructure
             [InlineData("Superman")]
             public void ShouldReturnTrueGivenMcuWorthyHeroName(string heroName)
             {
-                var result = _sut.Contains(heroName);
+                var sut = Fixture.Create<WorthyHerosList>();
+
+                var result = sut.Contains(heroName);
 
                 result.Should().BeTrue();
             }
@@ -40,7 +35,9 @@ namespace Unit.Infrastructure
             [InlineData("Soupman")]
             public void ShouldReturnFalseGivenNonMcuWorthyHeroName(string heroName)
             {
-                var result = _sut.Contains(heroName);
+                var sut = Fixture.Create<WorthyHerosList>();
+
+                var result = sut.Contains(heroName);
 
                 result.Should().BeFalse();
             }

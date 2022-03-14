@@ -1,50 +1,55 @@
 using Asgard.Infrastructure;
 using Asgard.Models;
 using Asgard.Services;
+using AutoFixture;
 using FluentAssertions;
-using Moq.AutoMock;
+using Moq;
+using Unit.Utilities;
 using Xunit;
 
 namespace Unit.Infrastructure
 {
     public class MjolnirWieldingServiceTests
     {
-        public class TheWieldMethod
+        public class TheWieldMethod : UnitTest
         {
-            private readonly MjolnirWieldingService _sut;
-            private readonly AutoMocker _fixture = new AutoMocker();
-
-            public TheWieldMethod()
-            {
-                _sut = _fixture.CreateInstance<MjolnirWieldingService>();
-            }
-
             [Fact]
-            public void ShouldReturnTrueGivenHeroNameIsWorthy()
+            public void ShouldReturnTrueGivenHeroNameIsContainedInWorthyHeroList()
             {
-                var hero = new Hero("hero x");
+                var hero = CreateHero();
 
-                _fixture.GetMock<IWorthyHerosList>()
+                Fixture.Freeze<Mock<IWorthyHerosList>>()
                 .Setup(o => o.Contains(hero.Name))
                 .Returns(true);
 
-                var result = _sut.Wield(hero);
+                var sut = Fixture.Create<MjolnirWieldingService>();
+
+                var result = sut.Wield(hero);
 
                 result.Should().BeTrue();
             }
 
-            [Fact]
-            public void ShouldReturnFalseGivenHeroNameIsUnworthy()
-            {
-                var hero = new Hero("hero x");
 
-                _fixture.GetMock<IWorthyHerosList>()
+            [Fact]
+            public void ShouldReturnFalseGivenHeroNameIsNotContainedInWorthyHeroList()
+            {
+                var hero = CreateHero();
+
+                Fixture.Freeze<Mock<IWorthyHerosList>>()
                 .Setup(o => o.Contains(hero.Name))
                 .Returns(false);
 
-                var result = _sut.Wield(hero);
+                var sut = Fixture.Create<MjolnirWieldingService>();
+
+                var result = sut.Wield(hero);
 
                 result.Should().BeFalse();
+            }
+
+            private Hero CreateHero()
+            {
+                var heroName = Fixture.Create<string>();
+                return new Hero(heroName);
             }
         }
     }
