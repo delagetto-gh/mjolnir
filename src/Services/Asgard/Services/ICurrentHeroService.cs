@@ -1,7 +1,9 @@
+using Asgard.Models;
+
 namespace Asgard.Services
 {
     public interface ICurrentHeroService
     {
-        bool WieldAsgard();
+        Hero Get();
     }
 }
