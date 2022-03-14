@@ -1,57 +1,60 @@
 using Asgard.ActionResults;
-using FluentAssertions;
+using AutoFixture;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+using Unit.Utilities;
 using Xunit;
 
 namespace Unit.ActionResults
 {
     public class WorthyResultTests
     {
-        public class TheExecuteActionMethod
+        public class TheExecuteActionMethod : UnitTest
         {
             [Fact]
             public void ShouldSetTheHttpResponseStatusCodeTo200GivenActionContext()
             {
-                // Given
-                var actionContext = CreateActionContext();
-                var sut = new WorthyResult();
+                var mockHttpResponse = new Mock<IHttpResponseFeature>();
 
-                // When
+                var actionContext = CreateActionContext(mockHttpResponse);
+
+                var sut = Fixture.Create<WorthyResult>();
+
                 sut.ExecuteResult(actionContext);
 
-                // Then
-                var result = actionContext.HttpContext.Features.Get<IHttpResponseFeature>();
-                result.StatusCode.Should().Be(200);
+                mockHttpResponse.VerifySet(o => o.StatusCode = 200);
             }
 
             [Fact]
             public void ShouldSetTheHttpResponseReasonPhraseToWorthyGivenActionContext()
             {
-                // Given
-                var actionContext = CreateActionContext();
-                var sut = new WorthyResult();
+                var mockHttpResponse = new Mock<IHttpResponseFeature>();
 
-                // When
+                var actionContext = CreateActionContext(mockHttpResponse);
+
+                var sut = Fixture.Create<WorthyResult>();
+
                 sut.ExecuteResult(actionContext);
 
-                // Then
-                var result = actionContext.HttpContext.Features.Get<IHttpResponseFeature>();
-                result.ReasonPhrase.Should().Be("Worthy");
+                mockHttpResponse.VerifySet(o => o.ReasonPhrase = "Worthy");
             }
 
-            private static ActionContext CreateActionContext()
+            private ActionContext CreateActionContext(Mock<IHttpResponseFeature> mockHttpResponse)
             {
-                var httpResponseFeature = new HttpResponseFeature();
-                var featureCollection = new FeatureCollection();
-                featureCollection.Set<IHttpResponseFeature>(httpResponseFeature);
+                var mockFeatureCollection = new Mock<IFeatureCollection>();
 
-                var httpContext = new DefaultHttpContext(featureCollection);
+                mockFeatureCollection
+                .Setup(o => o.Get<IHttpResponseFeature>())
+                .Returns(mockHttpResponse.Object);
 
-                var actionContext = new ActionContext();
-                actionContext.HttpContext = httpContext;
-                return actionContext;
+                var httpContext = new DefaultHttpContext(mockFeatureCollection.Object);
+
+                return new ActionContext
+                {
+                    HttpContext = httpContext
+                };
             }
         }
     }

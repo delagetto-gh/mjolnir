@@ -1,22 +1,20 @@
 using Asgard.Models;
+using AutoFixture;
 using FluentAssertions;
+using Unit.Utilities;
 using Xunit;
 
 namespace Unit.Models
 {
     public class HeroTests
     {
-        public class TheNameProperty
+        public class TheNameProperty : UnitTest
         {
-            [Theory]
-            [InlineData("Thot")]
-            [InlineData("Captain Underpants")]
-            [InlineData("Black Rabbit")]
-            [InlineData("Four Loko")]
-            [InlineData("Sight")]
-            [InlineData("Soupman")]
-            public void ShouldReturnCorrectName(string name)
+            [Fact]
+            public void ShouldReturnCorrectName()
             {
+                var name = Fixture.Create<string>();
+
                 var sut = new Hero(name);
 
                 sut.Name.Should().Be(name);

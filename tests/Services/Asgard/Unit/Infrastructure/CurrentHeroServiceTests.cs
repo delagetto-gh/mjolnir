@@ -1,30 +1,26 @@
 using System.Security.Claims;
 using Asgard.Infrastructure;
+using AutoFixture;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Moq.AutoMock;
+using Moq;
+using Unit.Utilities;
 using Xunit;
 
 namespace Unit.Infrastructure
 {
     public class CurrentHeroServiceTests
     {
-        public class TheGetMethod
+        public class TheGetMethod : UnitTest
         {
-            private readonly CurrentHeroService _sut;
-            private readonly AutoMocker _fixture = new AutoMocker();
-
-            public TheGetMethod()
-            {
-                _sut = _fixture.CreateInstance<CurrentHeroService>();
-            }
-
             [Fact]
             public void ShouldReturnHeroGivenHttpContextUserWithNameClaimType()
             {
                 SetupHttpContextUser("someHeroName");
 
-                var result = _sut.Get();
+                var sut = Fixture.Create<CurrentHeroService>();
+
+                var result = sut.Get();
 
                 result.Should().NotBeNull();
             }
@@ -46,24 +42,26 @@ namespace Unit.Infrastructure
             {
                 SetupHttpContextUser(heroName);
 
-                var result = _sut.Get();
+                var sut = Fixture.Create<CurrentHeroService>();
+
+                var result = sut.Get();
 
                 result.Name.Should().Be(heroName);
             }
 
             private void SetupHttpContextUser(string heroName)
             {
-                _fixture.GetMock<IHttpContextAccessor>()
-                      .Setup(o => o.HttpContext)
-                      .Returns(() =>
-                      {
-                          var nameClaim = new Claim(ClaimTypes.Name, heroName);
-                          var claims = new Claim[] { nameClaim };
-                          var identity = new ClaimsIdentity(claims);
-                          var user = new ClaimsPrincipal(identity);
-                          var httpContext = new DefaultHttpContext { User = user };
-                          return httpContext;
-                      });
+                Fixture.Freeze<Mock<IHttpContextAccessor>>()
+                        .Setup(o => o.HttpContext)
+                        .Returns(() =>
+                        {
+                            var nameClaim = new Claim(ClaimTypes.Name, heroName);
+                            var claims = new Claim[] { nameClaim };
+                            var identity = new ClaimsIdentity(claims);
+                            var user = new ClaimsPrincipal(identity);
+                            var httpContext = new DefaultHttpContext { User = user };
+                            return httpContext;
+                        });
             }
         }
     }
