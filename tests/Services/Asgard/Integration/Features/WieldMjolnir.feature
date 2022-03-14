@@ -7,7 +7,7 @@ Feature: Wield Mjolnir
 		Given I have the hero <heroName>
 		And I have my hero's AP
 		And I create a GET request to /mjolnir
-		And I add in the authorisation header AP <myHeroAP>
+		And I add in the authorisation header Bearer <myHeroAP>
 		When I make the request
 		Then the response status code should be 200
 		And the response reason phrase should be Worthy
@@ -24,7 +24,7 @@ Feature: Wield Mjolnir
 		Given I have the hero <heroName>
 		And I have my hero's AP
 		And I create a GET request to /mjolnir
-		And I add in the authorisation header AP <myHeroAP>
+		And I add in the authorisation header Bearer <myHeroAP>
 		When I make the request
 		Then the response status code should be 403
 		And the response reason phrase should be Unworthy
