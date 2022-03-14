@@ -30,9 +30,18 @@ namespace Unit.Infrastructure
             }
 
             [Theory]
-            [InlineData("GenericHeroName")]
-            [InlineData("Captain Marvel")]
-            [InlineData("Beowolf")]
+            [InlineData("Thor")]
+            [InlineData("Captain America")]
+            [InlineData("Black Panther")]
+            [InlineData("Loki")]
+            [InlineData("Vision")]
+            [InlineData("Superman")]
+            [InlineData("Thot")]
+            [InlineData("Captain Underpants")]
+            [InlineData("Black Rabbit")]
+            [InlineData("Four Loko")]
+            [InlineData("Sight")]
+            [InlineData("Soupman")]
             public void ShouldReturnCorrectHeroNameGivenHttpContextUserWithNameClaimType(string heroName)
             {
                 SetupHttpContextUser(heroName);
@@ -48,16 +57,12 @@ namespace Unit.Infrastructure
                       .Setup(o => o.HttpContext)
                       .Returns(() =>
                       {
-                          var claims = new Claim[]
-                          {
-                                new Claim(ClaimTypes.Name, heroName)
-                          };
+                          var nameClaim = new Claim(ClaimTypes.Name, heroName);
+                          var claims = new Claim[] { nameClaim };
                           var identity = new ClaimsIdentity(claims);
                           var user = new ClaimsPrincipal(identity);
-                          return new DefaultHttpContext()
-                          {
-                              User = user
-                          };
+                          var httpContext = new DefaultHttpContext { User = user };
+                          return httpContext;
                       });
             }
         }
