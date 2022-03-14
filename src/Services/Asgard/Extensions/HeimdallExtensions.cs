@@ -25,23 +25,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 options.Events = new JwtBearerEvents
                 {
-                    OnMessageReceived = ctx =>
-                    {
-                        var authKey = "Authorization";
-                        var authHeader = ctx.Request.Headers[authKey];
-                        var apScheme = "AP "; //our custom scheme (AP = Asgard Pass)
-
-                        if (authHeader != StringValues.Empty)
-                        {
-                            var headerValue = authHeader.FirstOrDefault();
-                            if (!string.IsNullOrEmpty(headerValue) &&
-                                headerValue.StartsWith(apScheme))
-                            {
-                                ctx.Token = headerValue.Replace(apScheme, string.Empty);
-                            }
-                        }
-                        return Task.CompletedTask;
-                    },
                     OnChallenge = ctx =>
                     {
                         ctx.HandleResponse();

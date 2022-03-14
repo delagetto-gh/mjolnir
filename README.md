@@ -28,7 +28,7 @@ If your hero tries to lift Mjölnir without presenting their Ásgard Pass, then 
 
 1. Create your hero `POST /heroes`  
 2. Summon Heimdall in order to obtain your hero's Ásgard Pass (AP) `POST /passes`  
-3. Attempt to wield Mjolnir at `GET /mjolnir` with your AP _(add `Authorization: AP <yourAsgardPass>` to the request headers)_.
+3. Attempt to wield Mjolnir at `GET /mjolnir` with your AP _(add `Authorization: Bearer <yourAsgardPass>` to the request headers)_.
 
 ### Design & Development:
 
