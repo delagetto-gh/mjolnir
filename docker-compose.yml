@@ -1,0 +1,9 @@
+version: '3'
+services:
+  asgard-api:
+    build: ./src/Services/Asgard
+    container_name: asgard
+    environment:
+      - Heimdall__Secret=${HEIMDALL_SECRET}
+    expose:
+      - "80"
