@@ -2,7 +2,7 @@ using System;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Asgard.Services;
-using System.Linq;
+using Asgard.Models;
 
 namespace Asgard.Infrastructure
 {
@@ -15,30 +15,16 @@ namespace Asgard.Infrastructure
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public bool WieldAsgard()
+        public Hero Get()
         {
-            var currUser = _httpContextAccessor.HttpContext.User;
+            var user = _httpContextAccessor?.HttpContext?.User;
+            if (user == null)
+                throw new Exception("Unable to obtain user from current http request context.");
 
-            var heroName = GetHeroName(currUser);
-
-            return IsHeroWorthy(heroName);
+            var heroName = GetHeroName(user);
+            return new Hero(heroName);
         }
 
-        private string GetHeroName(ClaimsPrincipal currUser) => currUser.FindFirst(ClaimTypes.Name).Value;
-
-        private bool IsHeroWorthy(string heroName)
-        {
-            var worthyHeroes = new string[]
-            {
-              "Thor",
-              "Captain America",
-              "Black Panther",
-              "Loki",
-              "Vision",
-              "Superman"
-            };
-
-            return worthyHeroes.Contains(heroName);
-        }
+        private static string GetHeroName(ClaimsPrincipal currUser) => currUser.FindFirst(ClaimTypes.Name).Value;
     }
 }
