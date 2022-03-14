@@ -80,7 +80,7 @@ namespace Integration.Steps
         public void ThenTheResponseStatusCodeShouldBe(int statusCode)
         {
             var response = _scenarioContext.Get<HttpResponseMessage>(ResultContextKey);
-            response.StatusCode.Should().Be(statusCode);
+            response.StatusCode.Should().HaveValue(statusCode);
         }
 
         [Then(@"the response reason phrase should be (.*)")]
