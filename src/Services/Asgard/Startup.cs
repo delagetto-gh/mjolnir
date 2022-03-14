@@ -24,6 +24,8 @@ namespace Asgard
             services.AddControllers();
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentHeroService, CurrentHeroService>();
+            services.AddScoped<IMjolnirWieldingService, MjolnirWieldingService>();
+            services.AddScoped<IWorthyHerosList, WorthyHerosList>();
             services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme) //use authentication services (use JwtBearer by default/fallback)
                     .AddAsgardPass(Configuration); //add custom Asgard pass auth scheme (jwt really)
         }

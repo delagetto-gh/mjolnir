@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Asgard.ActionResults;
 using Asgard.Services;
@@ -15,17 +11,22 @@ namespace Asgard.Controllers
     public class MjolnirController : ControllerBase
     {
         private readonly ICurrentHeroService _currentHeroService;
+        private readonly IMjolnirWieldingService _mjolnirWieldingService;
 
-        public MjolnirController(ICurrentHeroService heroService)
+        public MjolnirController(ICurrentHeroService currentHeroService,
+                                 IMjolnirWieldingService mjolnirWieldingService)
         {
-            _currentHeroService = heroService;
+            _currentHeroService = currentHeroService;
+            _mjolnirWieldingService = mjolnirWieldingService;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            var isSuccess = _currentHeroService.WieldAsgard();
-            if (isSuccess)
+            var hero = _currentHeroService.Get();
+
+            var isSuccessful = _mjolnirWieldingService.Wield(hero);
+            if (isSuccessful)
                 return new WorthyResult();
 
             return new UnworthyResult();
