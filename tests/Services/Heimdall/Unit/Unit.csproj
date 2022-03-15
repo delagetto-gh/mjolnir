@@ -19,5 +19,9 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Services\Heimdall\Heimdall.csproj" />
+  </ItemGroup>
   
 </Project>
