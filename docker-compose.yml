@@ -4,6 +4,7 @@ services:
   bifrost-gateway:
     build: ./src/Gateways/Bifrost
     container_name: bifrost
+    image: mjolnir/bifrost
     ports:
       - "8080:80"
     depends_on:
@@ -12,6 +13,7 @@ services:
   asgard-api:
     build: ./src/Services/Asgard
     container_name: asgard
+    image: mjolnir/asgard
     environment:
       - Heimdall__Secret=${HEIMDALL_SECRET}
     expose:
