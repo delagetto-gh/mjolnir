@@ -1,5 +1,14 @@
 version: '3'
 services:
+
+  bifrost-gateway:
+    build: ./src/Gateways/Bifrost
+    container_name: bifrost
+    ports:
+      - "8080:80"
+    depends_on:
+      - asgard-api
+
   asgard-api:
     build: ./src/Services/Asgard
     container_name: asgard
