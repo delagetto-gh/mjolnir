@@ -6,7 +6,7 @@
 
 Small application developed for the purposes of learning:
 
-- [x] API Gateway (Nginx)
+- [x] API Gateway & Load Balancer (Nginx)
 - [x] JWT Auth[Z|N]
   - [x] Issuing (IdentityServer4)
   - [x] Claims, Signing, Secrets
@@ -65,6 +65,7 @@ If your hero tries to lift Mjölnir without presenting their Ásgard Pass, then 
 > The rainbow bridge that connects Asgard, the world of the Aesir tribe of gods.
 
 As such, this seemed like a perfect fit as the API Gateway to our application. It is responsible for: 
+* Load-Balancing requests to our downstream APIs (we shall be running _multiple instances_ of each microservice)
 * Routing the requests to the right APIs (Nginx), specifically:
 
 | Upstream Endpoint       | Downstream Endpoint        |
