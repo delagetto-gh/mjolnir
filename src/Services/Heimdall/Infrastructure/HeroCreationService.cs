@@ -3,9 +3,9 @@ using Heimdall.Models;
 
 namespace Heimdall.Infrastructure
 {
-    public class HeroesCreationService
+    public class HeroCreationService
     {
-        public HeroesCreationService()
+        public HeroCreationService()
         {
         }
 

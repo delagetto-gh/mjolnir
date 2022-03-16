@@ -5,9 +5,9 @@ using Heimdall.Infrastructure;
 using FluentAssertions;
 using AutoFixture;
 
-namespace Unit.Infratructure
+namespace Unit.Infrastructure
 {
-    public class HeroesCreationServiceTests
+    public class HeroCreationServiceTests
     {
         public class TheCreateHeroMethod : UnitTest
         {
@@ -16,7 +16,7 @@ namespace Unit.Infratructure
             {
                 var heroName = Fixture.Create<string>();
                 var password = Fixture.Create<string>();
-                var sut = new HeroesCreationService();
+                var sut = new HeroCreationService();
 
                 var result = sut.CreateHero(heroName, password);
 
@@ -28,7 +28,7 @@ namespace Unit.Infratructure
             {
                 var heroName = Fixture.Create<string>();
                 var password = Fixture.Create<string>();
-                var sut = new HeroesCreationService();
+                var sut = new HeroCreationService();
 
                 var result = sut.CreateHero(heroName, password);
 
@@ -45,7 +45,7 @@ namespace Unit.Infratructure
             [InlineData(" ", null)]
             public void ShouldThrowArgumentNullExceptionGivenEmptyHeroNameOrPasswordOrBoth(string heroName, string passowrd)
             {
-                var sut = new HeroesCreationService();
+                var sut = new HeroCreationService();
                 var result = Record.Exception(() => sut.CreateHero(heroName, passowrd));
                 result.Should().BeOfType<ArgumentNullException>();
             }
