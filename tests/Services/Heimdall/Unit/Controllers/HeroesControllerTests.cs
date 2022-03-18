@@ -13,7 +13,7 @@ namespace Unit.Controllers
 {
     public class HeroesControllerTests
     {
-        public class POST_RegisterHero : UnitTest
+        public class The_POST_RegisterHeroMethod : UnitTest
         {
             [Fact]
             public async Task ShouldReturn201CreatedStatucCodeGivenHeroNameAndPasswordAsync()
