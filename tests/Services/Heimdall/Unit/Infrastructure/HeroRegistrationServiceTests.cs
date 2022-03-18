@@ -19,31 +19,28 @@ namespace Unit.Infrastructure
         public class TheRegisterAsyncMethod : UnitTest
         {
             [Fact]
-            public void ShouldCreateHeroGivenNoHeroAlreadyExistsWithSameName()
+            public async Task ShouldCreateHeroGivenNoHeroAlreadyExistsWithSameName()
             {
                 var heroName = Fixture.Create<string>();
                 var password = Fixture.Create<string>();
-
                 var userManagerDouble = Fixture.Create<UserManagerCreateUserSuccessStub<IdentityUser>>();
-
-                var sut = new HeroesManagerService(userManagerDouble);
-
-                var result = sut.RegisterHeroAync(heroName, password);
-
-                result.Should().NotBeNull();
-            }
-
-            [Fact]
-            public async Task ShouldHeroNameTakenExceptionGivenEmptyHeroNameOrPasswordOrBoth()
-            {
-                var heroName = Fixture.Create<string>();
-                var password = Fixture.Create<string>();
-
-                var userManagerDouble = Fixture.Create<UserManagerNameAlreadyExistsStub<IdentityUser>>();
-
                 var sut = new HeroesManagerService(userManagerDouble);
 
                 var result = await Record.ExceptionAsync(() => sut.RegisterHeroAync(heroName, password));
+
+                result.Should().BeNull();
+            }
+
+            [Fact]
+            public async Task ShouldThrowHeroNameTakenExceptionGivenHeroAlreadyExistsWithSameName()
+            {
+                var heroName = Fixture.Create<string>();
+                var password = Fixture.Create<string>();
+                var userManagerDouble = Fixture.Create<UserManagerNameAlreadyExistsStub<IdentityUser>>();
+                var sut = new HeroesManagerService(userManagerDouble);
+
+                var result = await Record.ExceptionAsync(() => sut.RegisterHeroAync(heroName, password));
+
                 result.Should().BeOfType<HeroNameTakenException>();
             }
 
@@ -57,7 +54,8 @@ namespace Unit.Infrastructure
             [InlineData(" ", null)]
             public async Task ShouldThrowArgumentNullExceptionGivenEmptyHeroNameOrPasswordOrBoth(string heroName, string passowrd)
             {
-                var sut = new HeroesManagerService(null);
+                var userManagerDouble = Fixture.Create<UserManagerCreateUserSuccessStub<IdentityUser>>();
+                var sut = new HeroesManagerService(userManagerDouble);
                 var result = await Record.ExceptionAsync(() => sut.RegisterHeroAync(heroName, passowrd));
                 result.Should().BeOfType<ArgumentNullException>();
             }
@@ -79,7 +77,7 @@ namespace Unit.Infrastructure
                 }
             }
 
-            private class UserManagerNameAlreadyExistsStub<TUser> : UserManager<TUser> where TUser : class
+            private class UserManagerNameAlreadyExistsStub<TUser> : UserManager<TUser> where TUser : class, new()
             {
                 public UserManagerNameAlreadyExistsStub(IUserStore<TUser> store, IOptions<IdentityOptions> optionsAccessor, IPasswordHasher<TUser> passwordHasher, IEnumerable<IUserValidator<TUser>> userValidators, IEnumerable<IPasswordValidator<TUser>> passwordValidators, ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors, IServiceProvider services, ILogger<UserManager<TUser>> logger) : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
                 {
@@ -87,7 +85,7 @@ namespace Unit.Infrastructure
 
                 public override Task<TUser> FindByNameAsync(string userName)
                 {
-                    return Task.FromResult((TUser)new object());
+                    return Task.FromResult(new TUser());
                 }
             }
         }
