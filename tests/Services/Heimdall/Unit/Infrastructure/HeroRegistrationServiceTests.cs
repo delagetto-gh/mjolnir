@@ -6,17 +6,14 @@ using FluentAssertions;
 using AutoFixture;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Moq;
-using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 using Heimdall.Exceptions;
+using Unit.Doubles;
 
 namespace Unit.Infrastructure
 {
-    public class HeroRegistrationServiceTests
+    public partial class HeroRegistrationServiceTests
     {
-        public class TheRegisterAsyncMethod : UnitTest
+        public partial class TheRegisterAsyncMethod : UnitTest
         {
             [Fact]
             public async Task ShouldCreateHeroGivenNoHeroAlreadyExistsWithSameName()
@@ -36,7 +33,7 @@ namespace Unit.Infrastructure
             {
                 var heroName = Fixture.Create<string>();
                 var password = Fixture.Create<string>();
-                var userManagerDouble = Fixture.Create<UserManagerNameAlreadyExistsStub<IdentityUser>>();
+                var userManagerDouble = Fixture.Create<UserManagerUserAlreadyExistsStub<IdentityUser>>();
                 var sut = new HeroesManagerService(userManagerDouble);
 
                 var result = await Record.ExceptionAsync(() => sut.RegisterHeroAync(heroName, password));
@@ -54,39 +51,10 @@ namespace Unit.Infrastructure
             [InlineData(" ", null)]
             public async Task ShouldThrowArgumentNullExceptionGivenEmptyHeroNameOrPasswordOrBoth(string heroName, string passowrd)
             {
-                var userManagerDouble = Fixture.Create<UserManagerCreateUserSuccessStub<IdentityUser>>();
+                var userManagerDouble = Fixture.Create<UserManager<IdentityUser>>();
                 var sut = new HeroesManagerService(userManagerDouble);
                 var result = await Record.ExceptionAsync(() => sut.RegisterHeroAync(heroName, passowrd));
                 result.Should().BeOfType<ArgumentNullException>();
-            }
-
-            private class UserManagerCreateUserSuccessStub<TUser> : UserManager<TUser> where TUser : class
-            {
-                public UserManagerCreateUserSuccessStub(IUserStore<TUser> store, IOptions<IdentityOptions> optionsAccessor, IPasswordHasher<TUser> passwordHasher, IEnumerable<IUserValidator<TUser>> userValidators, IEnumerable<IPasswordValidator<TUser>> passwordValidators, ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors, IServiceProvider services, ILogger<UserManager<TUser>> logger) : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
-                {
-                }
-
-                public override Task<TUser> FindByNameAsync(string userName)
-                {
-                    return Task.FromResult(default(TUser));
-                }
-
-                public override Task<IdentityResult> CreateAsync(TUser user, string password)
-                {
-                    return Task.FromResult(IdentityResult.Success);
-                }
-            }
-
-            private class UserManagerNameAlreadyExistsStub<TUser> : UserManager<TUser> where TUser : class, new()
-            {
-                public UserManagerNameAlreadyExistsStub(IUserStore<TUser> store, IOptions<IdentityOptions> optionsAccessor, IPasswordHasher<TUser> passwordHasher, IEnumerable<IUserValidator<TUser>> userValidators, IEnumerable<IPasswordValidator<TUser>> passwordValidators, ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors, IServiceProvider services, ILogger<UserManager<TUser>> logger) : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
-                {
-                }
-
-                public override Task<TUser> FindByNameAsync(string userName)
-                {
-                    return Task.FromResult(new TUser());
-                }
             }
         }
     }
