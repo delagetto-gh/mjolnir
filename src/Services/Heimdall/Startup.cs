@@ -23,7 +23,7 @@ namespace Heimdall
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var db = "Identities.db";
+            var db = "Heroes.db";
 
             services.AddControllers()
                     .AddControllersAsServices();
