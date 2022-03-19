@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Heimdall.Exceptions;
+using Heimdall.Requests;
 using Heimdall.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,11 +21,11 @@ namespace Heimdall.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> RegisterHero(string heroName, string password)
+        public async Task<ActionResult> RegisterHero(RegisterHeroRequest request)
         {
             try
             {
-                await _heroRegistrationService.RegisterHeroAync(heroName, password);
+                await _heroRegistrationService.RegisterHeroAync(request.HeroName, request.Password);
                 return Created(uri: string.Empty, value: null);
             }
             catch (HeroNameTakenException ex)
