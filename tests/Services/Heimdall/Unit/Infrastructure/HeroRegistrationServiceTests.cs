@@ -33,7 +33,7 @@ namespace Unit.Infrastructure
             {
                 var heroName = Fixture.Create<string>();
                 var password = Fixture.Create<string>();
-                var userManagerDouble = Fixture.Create<UserManagerUserAlreadyExistsStub<IdentityUser>>();
+                var userManagerDouble = Fixture.Create<UserManagerPreExistingUserStub<IdentityUser>>();
                 var sut = new HeroesManagerService(userManagerDouble);
 
                 var result = await Record.ExceptionAsync(() => sut.RegisterHeroAync(heroName, password));
