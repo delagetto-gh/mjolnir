@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text;
 using Heimdall.Infrastructure;
 using Heimdall.Services;
 using Microsoft.AspNetCore.Builder;
@@ -32,8 +33,12 @@ namespace Heimdall
             services.AddScoped<HeroesManagerService>();
             services.AddScoped<IAsgardPassIssuerService>(sp => sp.GetService<HeroesManagerService>());
             services.AddScoped<IHeroRegistrationService>(sp => sp.GetService<HeroesManagerService>());
-            services.AddIdentityCore<IdentityUser>()
-                    .AddEntityFrameworkStores<IdentityDbContext>();
+            services.AddIdentityCore<IdentityUser>(options =>
+            {
+                options.Password = CreateSimplePasswordOptions();
+                options.User.AllowedUserNameCharacters = DefaultCharactersIncludingSpaceCharacter();
+            })
+            .AddEntityFrameworkStores<IdentityDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +49,8 @@ namespace Heimdall
                 app.UseDeveloperExceptionPage();
             }
 
-            //create the db
+            //re-create the db
+            dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
 
             app.UseHttpsRedirection();
@@ -57,6 +63,25 @@ namespace Heimdall
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private static string DefaultCharactersIncludingSpaceCharacter()
+        {
+            return new StringBuilder("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+")
+                  .Append(' ')
+                  .ToString();
+        }
+
+        private static PasswordOptions CreateSimplePasswordOptions()
+        {
+            return new PasswordOptions
+            {
+                RequireUppercase = false,
+                RequiredLength = 1,
+                RequireDigit = false,
+                RequireLowercase = false,
+                RequireNonAlphanumeric = false
+            };
         }
     }
 }
