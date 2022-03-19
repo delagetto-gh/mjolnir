@@ -3,6 +3,7 @@ using AutoFixture;
 using FluentAssertions;
 using Heimdall.Controllers;
 using Heimdall.Exceptions;
+using Heimdall.Requests;
 using Heimdall.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -18,18 +19,17 @@ namespace Unit.Controllers
             [Fact]
             public async Task ShouldReturn201CreatedStatucCodeGivenHeroNameAndPasswordAsync()
             {
-                string name = Fixture.Create<string>();
-                string password = Fixture.Create<string>();
+                var request = Fixture.Create<RegisterHeroRequest>();
 
                 Fixture.Freeze<Mock<IHeroRegistrationService>>()
-                .Setup(o => o.RegisterHeroAync(name, password))
+                .Setup(o => o.RegisterHeroAync(request.HeroName, request.Password))
                 .Returns(Task.CompletedTask);
 
                 var sut = Fixture.Build<HeroesController>()
                                  .OmitAutoProperties() //https://github.com/AutoFixture/AutoFixture/issues/1141
                                  .Create();
 
-                var result = await sut.RegisterHero(name, password);
+                var result = await sut.RegisterHero(request);
 
                 result.Should().BeOfType<CreatedResult>()
                       .Which.StatusCode.Should().Be(201);
@@ -39,18 +39,17 @@ namespace Unit.Controllers
             [Fact]
             public async Task ShouldReturn409ConflictStatusCodeGivenHeroAlreadyExistsWithSameNameAsync()
             {
-                string name = Fixture.Create<string>();
-                string password = Fixture.Create<string>();
+                var request = Fixture.Create<RegisterHeroRequest>();
 
                 Fixture.Freeze<Mock<IHeroRegistrationService>>()
-                .Setup(o => o.RegisterHeroAync(name, password))
-                .Throws(new HeroNameTakenException(name));
+                .Setup(o => o.RegisterHeroAync(request.HeroName, request.Password))
+                .Throws(new HeroNameTakenException(request.HeroName));
 
                 var sut = Fixture.Build<HeroesController>()
                                  .OmitAutoProperties() //https://github.com/AutoFixture/AutoFixture/issues/1141
                                  .Create();
 
-                var result = await sut.RegisterHero(name, password);
+                var result = await sut.RegisterHero(request);
 
                 result.Should().BeOfType<ConflictObjectResult>()
                       .Which.StatusCode.Should().Be(409);
@@ -60,21 +59,20 @@ namespace Unit.Controllers
             [Fact]
             public async Task ShouldReturnCorrectErrorMessageGivenHeroAlreadyExistsWithSameNameAsync()
             {
-                string name = Fixture.Create<string>();
-                string password = Fixture.Create<string>();
+                var request = Fixture.Create<RegisterHeroRequest>();
 
                 Fixture.Freeze<Mock<IHeroRegistrationService>>()
-                .Setup(o => o.RegisterHeroAync(name, password))
-                .Throws(new HeroNameTakenException(name));
+                .Setup(o => o.RegisterHeroAync(request.HeroName, request.Password))
+                .Throws(new HeroNameTakenException(request.HeroName));
 
                 var sut = Fixture.Build<HeroesController>()
                                  .OmitAutoProperties() //https://github.com/AutoFixture/AutoFixture/issues/1141
                                  .Create();
 
-                var result = await sut.RegisterHero(name, password);
+                var result = await sut.RegisterHero(request);
 
                 result.Should().BeOfType<ConflictObjectResult>()
-                      .Which.Value.Should().Be($"Hero name is already taken. {name}");
+                      .Which.Value.Should().Be($"Hero name is already taken. {request.HeroName}");
             }
         }
     }
