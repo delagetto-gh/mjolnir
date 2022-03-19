@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Heimdall.Exceptions;
 using Heimdall.Services;
@@ -24,7 +23,7 @@ namespace Heimdall.Infrastructure
             if (string.IsNullOrWhiteSpace(password))
                 throw new ArgumentNullException(nameof(password));
 
-            var identity = new IdentityUser
+            var hero = new IdentityUser
             {
                 UserName = name
             };
@@ -33,7 +32,7 @@ namespace Heimdall.Infrastructure
             if (existingHero != null)
                 throw new HeroNameTakenException(name);
 
-            await _usersManager.CreateAsync(identity, password);
+            await _usersManager.CreateAsync(hero, password);
         }
     }
 }

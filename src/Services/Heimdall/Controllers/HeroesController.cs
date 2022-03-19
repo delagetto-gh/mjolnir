@@ -1,4 +1,3 @@
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Heimdall.Exceptions;
 using Heimdall.Services;
