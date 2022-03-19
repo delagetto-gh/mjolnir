@@ -1,13 +1,13 @@
 ```gherkin
-    Use Case: Create Hero
+    Use Case: Register Hero
     
     As a user
-    I want be able to create a hero
+    I want be able to register my hero
     So that my hero can try to wield Mjolnir
 
     Scenario: Hero with same name already exists
         Given a hero exists with the name <heroName>
-        When I try to create a hero with the same name
+        When I try to register a hero with the same name
         Then I should recieve an error indicating that my hero's name is already taken
         Examples:
  			| heroName           |

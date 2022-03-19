@@ -6,7 +6,7 @@
     So that I can see if they are worthy
 
     Scenario: Hero attempts to wield Mjolnir without an Asgard pass
-        Given I have created the hero <hero> 
+        Given I have registered the hero <hero> 
         When my hero attempts to wield Mjolnir
 		Then my hero should be unsuccessful and be banished from Asgard
         Examples:
