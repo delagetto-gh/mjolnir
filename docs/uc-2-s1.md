@@ -6,7 +6,7 @@
     So that my hero can try to wield Mjolnir
 
     Scenario: Correct hero credentials supplied
-        Given I have created the hero <hero> 
+        Given I have registered the hero <hero> 
         When I request for an Asgard pass for my hero with correct credentials
         Then I should be issued an Asgard Pass for my hero
         Examples:

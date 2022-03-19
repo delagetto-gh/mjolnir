@@ -6,7 +6,7 @@
     So that I can see if they are worthy
 
     Scenario: Unworthy hero attempts to wield Mjolnir
-        Given I have created the hero <unworthyHero> 
+        Given I have registered the hero <unworthyHero> 
         And my hero has been issued an Asgard pass
         When my hero attempts to wield Mjolnir
         Then my hero should be unsuccessful and be deemed unworthy

@@ -1,21 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-using System.Threading.Tasks;
-using Heimdall.Options;
+using Heimdall.Infrastructure;
 using Heimdall.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
-
 namespace Heimdall
 {
     public class Startup
@@ -30,43 +24,38 @@ namespace Heimdall
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            var db = "Heroes.db";
 
-            //add authentiation services
-            services
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(opt =>
+            services.AddControllers()
+                    .AddControllersAsServices();
+
+            services.AddDbContext<IdentityDbContext>(opt => opt.UseSqlite($"Data Source={db}"));
+            services.AddScoped<HeroesManagerService>();
+            services.AddScoped<IAsgardPassIssuerService>(sp => sp.GetService<HeroesManagerService>());
+            services.AddScoped<IHeroRegistrationService>(sp => sp.GetService<HeroesManagerService>());
+            services.AddIdentityCore<IdentityUser>(options =>
             {
-                var jwtOpts = new JwtOptions();
-                Configuration.Bind(JwtOptions.Key, jwtOpts);
-                var signingKey = Encoding.ASCII.GetBytes(jwtOpts.Secret);
-
-                opt.SaveToken = true;
-                opt.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(signingKey),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
-            services.Configure<JwtOptions>(Configuration.GetSection(JwtOptions.Key));
-            services.AddScoped<JwtAuthenticationManager>();
+                options.Password = CreateSimplePasswordOptions();
+                options.User.AllowedUserNameCharacters = DefaultCharactersIncludingSpaceCharacter();
+            })
+            .AddEntityFrameworkStores<IdentityDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IdentityDbContext dbContext)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            //re-create the db
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseAuthentication(); //add authentication middleware 
 
             app.UseAuthorization();
 
@@ -74,6 +63,25 @@ namespace Heimdall
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private static string DefaultCharactersIncludingSpaceCharacter()
+        {
+            return new StringBuilder("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+")
+                  .Append(' ')
+                  .ToString();
+        }
+
+        private static PasswordOptions CreateSimplePasswordOptions()
+        {
+            return new PasswordOptions
+            {
+                RequireUppercase = false,
+                RequiredLength = 1,
+                RequireDigit = false,
+                RequireLowercase = false,
+                RequireNonAlphanumeric = false
+            };
         }
     }
 }

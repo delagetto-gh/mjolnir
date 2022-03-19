@@ -12,4 +12,5 @@ packages
 !built_packages*
 !.gitignore
 *.pfx
+*.db
 
