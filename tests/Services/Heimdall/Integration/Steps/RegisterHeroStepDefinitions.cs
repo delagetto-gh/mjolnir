@@ -40,7 +40,7 @@ namespace Integration.Steps
 
             var response = await httpClient.SendAsync(httpRequest);
 
-            response.StatusCode.Should().Be(201, "we need to sucessfully register a hero as a pre-requisite.");
+            response.StatusCode.Should().HaveValue(201, "we need to sucessfully register a hero as a pre-requisite.");
         }
 
         [Given("I create a (.*) request to (.*)")]
@@ -75,12 +75,19 @@ namespace Integration.Steps
             _scenarioContext.Set<HttpResponseMessage>(response, ResultContextKey);
         }
 
-        [Then("the result should be (.*)")]
-        public void ThenTheResultShouldBe(int result)
+        [Then(@"the response status code should be (\d+)")]
+        public void ThenTheResponseStatusCodeShouldBe(int statusCode)
         {
-            //TODO: implement assert (verification) logic
+            var response = _scenarioContext.Get<HttpResponseMessage>(ResultContextKey);
+            response.StatusCode.Should().HaveValue(statusCode);
+        }
 
-            _scenarioContext.Pending();
+        [Then(@"the response body should contain the error message \""(.*)\""")]
+        public async Task AndTheResponseBodyShouldContainTheErrorMessage(string expectedErrorMessage)
+        {
+            var response = _scenarioContext.Get<HttpResponseMessage>(ResultContextKey);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            responseBody.Should().Be(expectedErrorMessage);
         }
     }
 }

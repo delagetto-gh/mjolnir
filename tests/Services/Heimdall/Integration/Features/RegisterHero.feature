@@ -9,8 +9,8 @@ Feature: Register Hero
 		Given a hero exists with the name Bruce Wayne
 		And I create a POST request to /heroes
 		And I add the following hero registration details to the request body:
-			| heroName    | password     |
-			| Bruce Wayne | 1amTh3Bvtmvn |
+			| heroName    | password      |
+			| Bruce Wayne | 1amTh3Bvtmvn! |
 		When I make the request
-# Then the response status code should be 409
-# And the response body should be
+		Then the response status code should be 409
+		And the response body should contain the error message "Hero name is already taken. Bruce Wayne"
